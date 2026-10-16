@@ -12,6 +12,7 @@ body{font-family:Arial,sans-serif;background:#eef2ff;display:flex;justify-conten
 h1{color:#3155d9;margin-top:0}
 input{width:100%;padding:13px;margin:8px 0;border:1px solid #d1d5db;border-radius:9px}
 button{width:100%;padding:13px;background:#3155d9;color:white;border:0;border-radius:9px;margin-top:12px;font-size:16px;cursor:pointer}
+button:disabled{opacity:.6}
 .link{color:#3155d9;cursor:pointer}
 #msg{overflow-wrap:anywhere;font-size:14px}
 [hidden]{display:none!important}
@@ -57,8 +58,23 @@ document.getElementById("toggle").onclick = () => {
   msg.textContent = "";
 };
 
+document.getElementById("toggle").onkeydown = (e) => {
+  if (e.key === "Enter" || e.key === " ") {
+    e.preventDefault();
+    signup.hidden = !signup.hidden;
+    msg.textContent = "";
+  }
+};
+
+// If a valid session already exists, go to Dashboard.
+const { data: sessionData } = await supabase.auth.getSession();
+if (sessionData.session) {
+  window.location.replace("./dashboard.html");
+}
+
 document.getElementById("login").addEventListener("submit", async (e) => {
   e.preventDefault();
+
   const btn = document.getElementById("loginBtn");
   btn.disabled = true;
   msg.textContent = "Logging in...";
@@ -70,7 +86,9 @@ document.getElementById("login").addEventListener("submit", async (e) => {
     });
 
     if (error) throw error;
-    msg.textContent = "Login successful!";
+
+    msg.textContent = "Login successful! Opening Dashboard...";
+    window.location.replace("./dashboard.html");
   } catch (err) {
     msg.textContent = err.message || "Login failed.";
   } finally {
@@ -80,6 +98,7 @@ document.getElementById("login").addEventListener("submit", async (e) => {
 
 signup.addEventListener("submit", async (e) => {
   e.preventDefault();
+
   const btn = document.getElementById("register");
   btn.disabled = true;
   msg.textContent = "Creating account...";
@@ -99,8 +118,12 @@ signup.addEventListener("submit", async (e) => {
     if (error) throw error;
 
     msg.textContent = data.session
-      ? "Account created successfully!"
-      : "Account submitted! Check your email for confirmation.";
+      ? "Account created! Opening Dashboard..."
+      : "Account created. Please confirm your email, then log in.";
+
+    if (data.session) {
+      window.location.replace("./dashboard.html");
+    }
   } catch (err) {
     msg.textContent = err.message || "Sign up failed.";
   } finally {
