@@ -1,0 +1,75 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EarnHub - Earn Online</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#07111f;color:#f1f5f9;font-family:Arial,sans-serif}
+header{padding:18px 20px;background:#0d1a2b;border-bottom:1px solid #263648;display:flex;justify-content:space-between;align-items:center}
+.logo{font-size:24px;font-weight:bold;color:#34d399}
+button,.btn{background:#34d399;color:#07111f;padding:12px 17px;border:0;border-radius:9px;font-weight:bold;text-decoration:none;cursor:pointer}
+main{max-width:1000px;margin:auto;padding:24px 16px}
+.hero{padding:30px 22px;border:1px solid #24483f;border-radius:20px;background:linear-gradient(135deg,#12382f,#102036)}
+h1{font-size:36px;margin:12px 0}
+p{color:#a9b8c9;line-height:1.6}
+.green{color:#34d399}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:20px 0}
+.card{background:#0d1a2b;border:1px solid #253549;padding:18px;border-radius:14px}
+.money{font-size:26px;font-weight:bold;margin-top:12px}
+.task{display:flex;justify-content:space-between;gap:10px;align-items:center}
+small{color:#94a3b8}
+footer{text-align:center;padding:25px;color:#8291a5}
+@media(max-width:500px){h1{font-size:29px}.grid{grid-template-columns:1fr}.task{align-items:flex-start;flex-direction:column}}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">EarnHub</div>
+  <a class="btn" href="#tasks">Explore Tasks</a>
+</header>
+<main>
+  <section class="hero">
+    <p class="green">YOUR TASKS. YOUR PROGRESS.</p>
+    <h1>Small Tasks.<br><span class="green">Real Progress.</span></h1>
+    <p>Discover micro-jobs, complete tasks and track your rewards in one place.</p>
+    <a class="btn" href="#tasks">Explore Tasks →</a>
+  </section>
+
+  <div class="grid">
+    <div class="card"><small>Available Tasks</small><div class="money">24</div></div>
+    <div class="card"><small>Total Earnings</small><div class="money green">$0.00</div></div>
+    <div class="card"><small>Referral Rewards</small><div class="money">$0.00</div></div>
+    <div class="card"><small>Pending Review</small><div class="money">0</div></div>
+  </div>
+
+  <section id="tasks">
+    <p class="green">TASK CENTER</p>
+    <h2>Explore Available Tasks</h2>
+    <div class="card task">
+      <div><b>Product Image Categorization</b><p>Micro task · 3–5 minutes</p></div>
+      <b class="green">$0.20</b>
+    </div>
+    <br>
+    <div class="card task">
+      <div><b>Research Survey</b><p>Survey · 5–8 minutes</p></div>
+      <b class="green">$0.45</b>
+    </div>
+    <br>
+    <div class="card task">
+      <div><b>Website Feedback</b><p>Review task · 4–6 minutes</p></div>
+      <b class="green">$0.30</b>
+    </div>
+  </section>
+
+  <div class="grid">
+    <div class="card"><h3>Referral Center</h3><p>Invite friends and track eligible referral rewards.</p></div>
+    <div class="card"><h3>My Wallet</h3><p>Track your balance, transactions and withdrawal requests.</p></div>
+  </div>
+  <p><small>Preview only. Tasks and balances are examples, not real earnings.</small></p>
+</main>
+<footer>© 2026 EarnHub · Micro Jobs & Rewards</footer>
+</body>
+</html>
