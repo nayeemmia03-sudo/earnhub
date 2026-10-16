@@ -62,11 +62,13 @@ document.getElementById("login").addEventListener("submit", async (e) => {
   const btn = document.getElementById("loginBtn");
   btn.disabled = true;
   msg.textContent = "Logging in...";
+
   try {
     const { error } = await supabase.auth.signInWithPassword({
       email: document.getElementById("loginEmail").value.trim(),
       password: document.getElementById("loginPassword").value
     });
+
     if (error) throw error;
     msg.textContent = "Login successful!";
   } catch (err) {
@@ -81,15 +83,21 @@ signup.addEventListener("submit", async (e) => {
   const btn = document.getElementById("register");
   btn.disabled = true;
   msg.textContent = "Creating account...";
+
   try {
     const { data, error } = await supabase.auth.signUp({
       email: document.getElementById("email").value.trim(),
       password: document.getElementById("password").value,
       options: {
-        data: { full_name: document.getElementById("name").value.trim() }
+        emailRedirectTo: "https://nayeemmia03-sudo.github.io/earnhub/auth.html",
+        data: {
+          full_name: document.getElementById("name").value.trim()
+        }
       }
     });
+
     if (error) throw error;
+
     msg.textContent = data.session
       ? "Account created successfully!"
       : "Account submitted! Check your email for confirmation.";
