@@ -19,8 +19,10 @@ button:disabled{opacity:.5;cursor:not-allowed}
 .muted{color:#64748b;overflow-wrap:anywhere}
 .task,.submission{border:1px solid #dbeafe;border-radius:10px;padding:15px;margin:12px 0;overflow-wrap:anywhere}
 .reward{color:#166534;font-weight:bold}
-.message{white-space:pre-wrap}
+.message{white-space:pre-wrap;overflow-wrap:anywhere}
 .hidden{display:none}
+input,textarea{display:block;width:100%;padding:12px;margin:8px 0 14px;border:1px solid #cbd5e1;border-radius:8px;font:inherit}
+label{font-weight:bold}
 </style>
 </head>
 <body>
@@ -57,6 +59,33 @@ button:disabled{opacity:.5;cursor:not-allowed}
 
   <div class="card hidden" id="adminPanel">
     <h3>Admin Panel</h3>
+
+    <div class="task">
+      <h3>Create New Task</h3>
+      <form id="createTaskForm">
+        <label for="newTaskTitle">Task Title</label>
+        <input id="newTaskTitle" type="text"
+          maxlength="150" placeholder="Enter task name" required>
+
+        <label for="newTaskDescription">Task Instructions</label>
+        <textarea id="newTaskDescription"
+          maxlength="2000" rows="4"
+          placeholder="Explain what users must do"
+          required></textarea>
+
+        <label for="newTaskReward">Reward Points</label>
+        <input id="newTaskReward" type="number"
+          min="1" max="100000" step="1"
+          placeholder="10" required>
+
+        <button id="createTaskButton" type="submit">
+          Create Task
+        </button>
+        <p id="createTaskMessage" class="message"></p>
+      </form>
+    </div>
+
+    <h3>Pending Submissions</h3>
     <p class="muted">Review pending task submissions.</p>
     <p id="adminMessage" class="message">Loading...</p>
     <div id="adminSubmissions"></div>
@@ -72,9 +101,10 @@ const supabase = createClient(
 );
 
 const $ = id => document.getElementById(id);
+
 const make = (tag, text, className = "") => {
   const el = document.createElement(tag);
-  el.textContent = text;
+  el.textContent = text ?? "";
   el.className = className;
   return el;
 };
@@ -95,7 +125,6 @@ if (sessionError || !sessionData.session) {
     location.replace("./auth.html");
   });
 
-  // Load balance if a profile exists
   async function loadBalance() {
     const { data, error } = await supabase
       .from("profiles")
@@ -111,7 +140,6 @@ if (sessionError || !sessionData.session) {
     }
   }
 
-  // Check admin status using the protected admin list
   const { data: adminRecord, error: adminError } = await supabase
     .from("admin_users")
     .select("user_id")
@@ -120,7 +148,6 @@ if (sessionError || !sessionData.session) {
 
   const isAdmin = !adminError && !!adminRecord;
 
-  // Load active tasks and add submission buttons
   const { data: tasks, error: tasksError } = await supabase
     .from("tasks")
     .select("id,title,description,reward_points")
@@ -135,10 +162,15 @@ if (sessionError || !sessionData.session) {
   } else {
     $("taskMessage").textContent = "";
 
-    const { data: previous } = await supabase
+    const { data: previous, error: previousError } = await supabase
       .from("task_submissions")
       .select("task_id,status")
       .eq("user_id", user.id);
+
+    if (previousError) {
+      $("taskMessage").textContent =
+        "Could not load previous submissions: " + previousError.message;
+    }
 
     const submitted = new Map(
       (previous || []).map(s => [String(s.task_id), s.status])
@@ -153,12 +185,15 @@ if (sessionError || !sessionData.session) {
       ));
 
       const oldStatus = submitted.get(String(task.id));
+
       if (oldStatus) {
         card.appendChild(make("p", "Submission status: " + oldStatus));
       } else {
         const btn = make("button", "Submit Task");
+
         btn.addEventListener("click", async () => {
           btn.disabled = true;
+
           const { error } = await supabase
             .from("task_submissions")
             .insert({
@@ -175,6 +210,7 @@ if (sessionError || !sessionData.session) {
             location.reload();
           }
         });
+
         card.appendChild(btn);
       }
 
@@ -182,7 +218,6 @@ if (sessionError || !sessionData.session) {
     }
   }
 
-  // Show user's own submission history
   async function loadMySubmissions() {
     const { data, error } = await supabase
       .from("task_submissions")
@@ -190,8 +225,11 @@ if (sessionError || !sessionData.session) {
       .eq("user_id", user.id)
       .order("submitted_at", { ascending: false });
 
+    $("mySubmissions").replaceChildren();
+
     if (error) {
-      $("myMessage").textContent = "Could not load submissions.";
+      $("myMessage").textContent =
+        "Could not load submissions: " + error.message;
       return;
     }
 
@@ -199,7 +237,10 @@ if (sessionError || !sessionData.session) {
       data.length ? "" : "You have not submitted any tasks yet.";
 
     for (const sub of data) {
-      const task = tasks?.find(t => String(t.id) === String(sub.task_id));
+      const task = (tasks || []).find(
+        t => String(t.id) === String(sub.task_id)
+      );
+
       $("mySubmissions").appendChild(make(
         "div",
         (task?.title || "Task #" + sub.task_id) +
@@ -212,9 +253,60 @@ if (sessionError || !sessionData.session) {
   await loadMySubmissions();
   await loadBalance();
 
-  // Admin-only panel
   if (isAdmin) {
     $("adminPanel").classList.remove("hidden");
+
+    // Admin: create a task
+    $("createTaskForm").addEventListener("submit", async event => {
+      event.preventDefault();
+
+      const title = $("newTaskTitle").value.trim();
+      const description = $("newTaskDescription").value.trim();
+      const reward = Number($("newTaskReward").value);
+      const button = $("createTaskButton");
+      const message = $("createTaskMessage");
+
+      if (
+        !title ||
+        !description ||
+        !Number.isInteger(reward) ||
+        reward < 1 ||
+        reward > 100000
+      ) {
+        message.textContent =
+          "Enter a title, instructions and a valid reward from 1 to 100000.";
+        return;
+      }
+
+      button.disabled = true;
+      message.textContent = "Creating task...";
+
+      const { data: createdTask, error } = await supabase
+        .from("tasks")
+        .insert({
+          title: title,
+          description: description,
+          reward_points: reward,
+          is_active: true
+        })
+        .select("id")
+        .single();
+
+      button.disabled = false;
+
+      if (error) {
+        message.textContent = "Could not create task: " + error.message;
+        return;
+      }
+
+      message.textContent =
+        "Task created successfully! Task ID: " + createdTask.id;
+
+      $("createTaskForm").reset();
+
+      // Refresh so the new task appears in Available Tasks
+      setTimeout(() => location.reload(), 1000);
+    });
 
     async function loadAdminSubmissions() {
       $("adminSubmissions").replaceChildren();
@@ -237,9 +329,14 @@ if (sessionError || !sessionData.session) {
           : "No pending submissions.";
 
       for (const sub of submissions) {
-        const task = tasks?.find(t => String(t.id) === String(sub.task_id));
+        const task = (tasks || []).find(
+          t => String(t.id) === String(sub.task_id)
+        );
+
         const card = make("div", "", "submission");
-        card.appendChild(make("strong", task?.title || "Task #" + sub.task_id));
+        card.appendChild(make(
+          "strong", task?.title || "Task #" + sub.task_id
+        ));
         card.appendChild(make("p", "User ID: " + sub.user_id));
         card.appendChild(make("p", "Submission ID: " + sub.id));
 
@@ -251,16 +348,17 @@ if (sessionError || !sessionData.session) {
           );
 
           btn.addEventListener("click", async () => {
-            if (!confirm("Confirm " + decision + " for submission #" + sub.id + "?")) return;
+            if (!confirm(
+              "Confirm " + decision + " for submission #" + sub.id + "?"
+            )) return;
+
             btn.disabled = true;
 
-            const { data: result, error: reviewError } = await supabase.rpc(
-              "review_task_submission",
-              {
+            const { data: result, error: reviewError } =
+              await supabase.rpc("review_task_submission", {
                 p_submission_id: sub.id,
                 p_decision: decision
-              }
-            );
+              });
 
             if (reviewError) {
               alert("Review failed: " + reviewError.message);
