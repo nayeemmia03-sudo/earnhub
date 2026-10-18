@@ -10,14 +10,17 @@
 body{margin:0;font-family:Arial,sans-serif;background:#eef2ff;color:#172554}
 header{background:#3155d9;color:white;padding:20px}
 header h2{margin:0}
-main{max-width:700px;margin:25px auto;padding:15px}
+main{max-width:750px;margin:25px auto;padding:15px}
 .card{background:white;border-radius:15px;padding:22px;margin-bottom:18px;box-shadow:0 5px 20px #0001}
-button{background:#3155d9;color:white;border:0;border-radius:8px;padding:12px 18px;cursor:pointer}
-#logout{background:#dc2626}
+button{background:#3155d9;color:white;border:0;border-radius:8px;padding:12px 16px;cursor:pointer;margin:4px}
+button:disabled{opacity:.5;cursor:not-allowed}
+#logout,.reject{background:#dc2626}
+.approve{background:#15803d}
 .muted{color:#64748b;overflow-wrap:anywhere}
-.task{border:1px solid #dbeafe;border-radius:10px;padding:15px;margin:12px 0}
+.task,.submission{border:1px solid #dbeafe;border-radius:10px;padding:15px;margin:12px 0;overflow-wrap:anywhere}
 .reward{color:#166534;font-weight:bold}
-#taskMessage{white-space:pre-wrap}
+.message{white-space:pre-wrap}
+.hidden{display:none}
 </style>
 </head>
 <body>
@@ -29,7 +32,7 @@ button{background:#3155d9;color:white;border:0;border-radius:8px;padding:12px 18
 <main>
   <div class="card">
     <h2>Welcome to EarnHub!</h2>
-    <p id="status">Checking your account...</p>
+    <p id="status">Checking account...</p>
     <p class="muted" id="email"></p>
     <button id="logout">Logout</button>
   </div>
@@ -37,13 +40,26 @@ button{background:#3155d9;color:white;border:0;border-radius:8px;padding:12px 18
   <div class="card">
     <h3>My Balance</h3>
     <h2 id="balance">0 points</h2>
-    <p class="muted">Points are displayed here. They are not cash or withdrawable earnings.</p>
+    <p class="muted">Points are not cash and cannot be withdrawn yet.</p>
   </div>
 
   <div class="card">
     <h3>Available Tasks</h3>
-    <p id="taskMessage">Loading tasks...</p>
+    <p id="taskMessage" class="message">Loading tasks...</p>
     <div id="taskList"></div>
+  </div>
+
+  <div class="card">
+    <h3>My Submissions</h3>
+    <p id="myMessage" class="message">Loading submissions...</p>
+    <div id="mySubmissions"></div>
+  </div>
+
+  <div class="card hidden" id="adminPanel">
+    <h3>Admin Panel</h3>
+    <p class="muted">Review pending task submissions.</p>
+    <p id="adminMessage" class="message">Loading...</p>
+    <div id="adminSubmissions"></div>
   </div>
 </main>
 
@@ -55,68 +71,218 @@ const supabase = createClient(
   "sb_publishable_GPqGktzKZRQpCBCph-YRyQ_PtK5YH6_"
 );
 
-const status = document.getElementById("status");
-const email = document.getElementById("email");
-const taskMessage = document.getElementById("taskMessage");
-const taskList = document.getElementById("taskList");
+const $ = id => document.getElementById(id);
+const make = (tag, text, className = "") => {
+  const el = document.createElement(tag);
+  el.textContent = text;
+  el.className = className;
+  return el;
+};
 
-const { data, error } = await supabase.auth.getSession();
+const { data: sessionData, error: sessionError } =
+  await supabase.auth.getSession();
 
-if (error || !data.session) {
-  status.textContent = "Please log in to access your dashboard.";
-  setTimeout(() => window.location.replace("./auth.html"), 1500);
+if (sessionError || !sessionData.session) {
+  $("status").textContent = "Please log in first.";
+  setTimeout(() => location.replace("./auth.html"), 1500);
 } else {
-  status.textContent = "You are logged in successfully!";
-  email.textContent = "Email: " + data.session.user.email;
+  const user = sessionData.session.user;
+  $("status").textContent = "Logged in successfully";
+  $("email").textContent = "Email: " + user.email;
 
-  const { data: profile, error: profileError } = await supabase
-    .from("profiles")
-    .select("points")
-    .eq("id", data.session.user.id)
+  $("logout").addEventListener("click", async () => {
+    await supabase.auth.signOut();
+    location.replace("./auth.html");
+  });
+
+  // Load balance if a profile exists
+  async function loadBalance() {
+    const { data, error } = await supabase
+      .from("profiles")
+      .select("points")
+      .eq("id", user.id)
+      .maybeSingle();
+
+    if (error) {
+      $("balance").textContent = "Could not load balance";
+    } else {
+      $("balance").textContent =
+        (data ? Number(data.points) : 0) + " points";
+    }
+  }
+
+  // Check admin status using the protected admin list
+  const { data: adminRecord, error: adminError } = await supabase
+    .from("admin_users")
+    .select("user_id")
+    .eq("user_id", user.id)
     .maybeSingle();
 
-  if (!profileError && profile) {
-    document.getElementById("balance").textContent =
-      Number(profile.points) + " points";
+  const isAdmin = !adminError && !!adminRecord;
+
+  // Load active tasks and add submission buttons
+  const { data: tasks, error: tasksError } = await supabase
+    .from("tasks")
+    .select("id,title,description,reward_points")
+    .eq("is_active", true)
+    .order("id");
+
+  if (tasksError) {
+    $("taskMessage").textContent =
+      "Could not load tasks: " + tasksError.message;
+  } else if (!tasks || tasks.length === 0) {
+    $("taskMessage").textContent = "No active tasks available.";
+  } else {
+    $("taskMessage").textContent = "";
+
+    const { data: previous } = await supabase
+      .from("task_submissions")
+      .select("task_id,status")
+      .eq("user_id", user.id);
+
+    const submitted = new Map(
+      (previous || []).map(s => [String(s.task_id), s.status])
+    );
+
+    for (const task of tasks) {
+      const card = make("div", "", "task");
+      card.appendChild(make("h4", task.title));
+      card.appendChild(make("p", task.description || ""));
+      card.appendChild(make(
+        "p", "Reward: " + task.reward_points + " points", "reward"
+      ));
+
+      const oldStatus = submitted.get(String(task.id));
+      if (oldStatus) {
+        card.appendChild(make("p", "Submission status: " + oldStatus));
+      } else {
+        const btn = make("button", "Submit Task");
+        btn.addEventListener("click", async () => {
+          btn.disabled = true;
+          const { error } = await supabase
+            .from("task_submissions")
+            .insert({
+              user_id: user.id,
+              task_id: task.id,
+              status: "pending"
+            });
+
+          if (error) {
+            alert("Could not submit: " + error.message);
+            btn.disabled = false;
+          } else {
+            alert("Task submitted for review!");
+            location.reload();
+          }
+        });
+        card.appendChild(btn);
+      }
+
+      $("taskList").appendChild(card);
+    }
   }
 
-  const { data: tasks, error: taskError } = await supabase
-    .from("tasks")
-    .select("id, title, description, reward_points")
-    .eq("is_active", true)
-    .order("id", { ascending: true });
+  // Show user's own submission history
+  async function loadMySubmissions() {
+    const { data, error } = await supabase
+      .from("task_submissions")
+      .select("id,task_id,status,submitted_at")
+      .eq("user_id", user.id)
+      .order("submitted_at", { ascending: false });
 
-  if (taskError) {
-    taskMessage.textContent =
-      "Could not load tasks. Please check the Supabase tasks table permissions.";
-  } else if (!tasks || tasks.length === 0) {
-    taskMessage.textContent = "No active tasks available yet.";
-  } else {
-    taskMessage.textContent = "";
-    tasks.forEach(task => {
-      const item = document.createElement("div");
-      item.className = "task";
+    if (error) {
+      $("myMessage").textContent = "Could not load submissions.";
+      return;
+    }
 
-      const title = document.createElement("h4");
-      title.textContent = task.title;
+    $("myMessage").textContent =
+      data.length ? "" : "You have not submitted any tasks yet.";
 
-      const description = document.createElement("p");
-      description.textContent = task.description || "";
+    for (const sub of data) {
+      const task = tasks?.find(t => String(t.id) === String(sub.task_id));
+      $("mySubmissions").appendChild(make(
+        "div",
+        (task?.title || "Task #" + sub.task_id) +
+        " — Status: " + sub.status,
+        "submission"
+      ));
+    }
+  }
 
-      const reward = document.createElement("p");
-      reward.className = "reward";
-      reward.textContent = "Reward: " + task.reward_points + " points";
+  await loadMySubmissions();
+  await loadBalance();
 
-      item.append(title, description, reward);
-      taskList.appendChild(item);
-    });
+  // Admin-only panel
+  if (isAdmin) {
+    $("adminPanel").classList.remove("hidden");
+
+    async function loadAdminSubmissions() {
+      $("adminSubmissions").replaceChildren();
+
+      const { data: submissions, error } = await supabase
+        .from("task_submissions")
+        .select("id,user_id,task_id,status,submitted_at")
+        .eq("status", "pending")
+        .order("submitted_at");
+
+      if (error) {
+        $("adminMessage").textContent =
+          "Could not load pending submissions: " + error.message;
+        return;
+      }
+
+      $("adminMessage").textContent =
+        submissions.length
+          ? "Pending submissions: " + submissions.length
+          : "No pending submissions.";
+
+      for (const sub of submissions) {
+        const task = tasks?.find(t => String(t.id) === String(sub.task_id));
+        const card = make("div", "", "submission");
+        card.appendChild(make("strong", task?.title || "Task #" + sub.task_id));
+        card.appendChild(make("p", "User ID: " + sub.user_id));
+        card.appendChild(make("p", "Submission ID: " + sub.id));
+
+        for (const decision of ["approved", "rejected"]) {
+          const btn = make(
+            "button",
+            decision === "approved" ? "Approve" : "Reject",
+            decision === "approved" ? "approve" : "reject"
+          );
+
+          btn.addEventListener("click", async () => {
+            if (!confirm("Confirm " + decision + " for submission #" + sub.id + "?")) return;
+            btn.disabled = true;
+
+            const { data: result, error: reviewError } = await supabase.rpc(
+              "review_task_submission",
+              {
+                p_submission_id: sub.id,
+                p_decision: decision
+              }
+            );
+
+            if (reviewError) {
+              alert("Review failed: " + reviewError.message);
+              btn.disabled = false;
+              return;
+            }
+
+            alert(result || "Review completed.");
+            await loadAdminSubmissions();
+            await loadBalance();
+          });
+
+          card.appendChild(btn);
+        }
+
+        $("adminSubmissions").appendChild(card);
+      }
+    }
+
+    await loadAdminSubmissions();
   }
 }
-
-document.getElementById("logout").addEventListener("click", async () => {
-  await supabase.auth.signOut();
-  window.location.replace("./auth.html");
-});
 </script>
 </body>
 </html>
