@@ -37,6 +37,7 @@ button:disabled{opacity:.6}
 <input id="name" placeholder="Your name" required>
 <input id="email" type="email" placeholder="Email address" required>
 <input id="password" type="password" minlength="6" placeholder="Create a password (min. 6 characters)" required>
+<input id="referralCode" placeholder="Referral code (optional)" autocomplete="off">
 <button type="submit" id="register">Sign Up</button>
 </form>
 
@@ -52,17 +53,26 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 const msg = document.getElementById("msg");
 const signup = document.getElementById("signup");
+const referralInput = document.getElementById("referralCode");
 
-document.getElementById("toggle").onclick = () => {
+// Pre-fill referral code from a link like auth.html?ref=ABC123
+const params = new URLSearchParams(window.location.search);
+const incomingCode = (params.get("ref") || "").trim().toUpperCase();
+if (incomingCode) {
+  referralInput.value = incomingCode;
+  signup.hidden = false;
+}
+
+function toggleSignup() {
   signup.hidden = !signup.hidden;
   msg.textContent = "";
-};
+}
 
+document.getElementById("toggle").onclick = toggleSignup;
 document.getElementById("toggle").onkeydown = (e) => {
   if (e.key === "Enter" || e.key === " ") {
     e.preventDefault();
-    signup.hidden = !signup.hidden;
-    msg.textContent = "";
+    toggleSignup();
   }
 };
 
@@ -74,7 +84,6 @@ if (sessionData.session) {
 
 document.getElementById("login").addEventListener("submit", async (e) => {
   e.preventDefault();
-
   const btn = document.getElementById("loginBtn");
   btn.disabled = true;
   msg.textContent = "Logging in...";
@@ -84,7 +93,6 @@ document.getElementById("login").addEventListener("submit", async (e) => {
       email: document.getElementById("loginEmail").value.trim(),
       password: document.getElementById("loginPassword").value
     });
-
     if (error) throw error;
 
     msg.textContent = "Login successful! Opening Dashboard...";
@@ -98,28 +106,49 @@ document.getElementById("login").addEventListener("submit", async (e) => {
 
 signup.addEventListener("submit", async (e) => {
   e.preventDefault();
-
   const btn = document.getElementById("register");
   btn.disabled = true;
   msg.textContent = "Creating account...";
 
   try {
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
+    const name = document.getElementById("name").value.trim();
+    const code = referralInput.value.trim().toUpperCase();
+
+    // Validate a supplied referral code before creating the account.
+    let referrerId = null;
+    if (code) {
+      const { data: referrer, error: refError } = await supabase
+        .from("profiles")
+        .select("id")
+        .eq("referral_code", code)
+        .maybeSingle();
+
+      if (refError) throw refError;
+      if (!referrer) throw new Error("Invalid referral code.");
+      referrerId = referrer.id;
+    }
+
     const { data, error } = await supabase.auth.signUp({
-      email: document.getElementById("email").value.trim(),
-      password: document.getElementById("password").value,
+      email,
+      password,
       options: {
         emailRedirectTo: "https://nayeemmia03-sudo.github.io/earnhub/auth.html",
         data: {
-          full_name: document.getElementById("name").value.trim()
+          full_name: name,
+          referral_code: code || null
         }
       }
     });
 
     if (error) throw error;
 
+    // If email confirmation is enabled, the referral will be applied
+    // after the user confirms email and signs in. Do not award points here.
     msg.textContent = data.session
-      ? "Account created! Opening Dashboard..."
-      : "Account created. Please confirm your email, then log in.";
+      ? "Account created. Referral bonus is not issued yet. Please continue to Dashboard."
+      : "Account created. Please confirm your email, then log in. Referral bonus is not issued yet.";
 
     if (data.session) {
       window.location.replace("./dashboard.html");
