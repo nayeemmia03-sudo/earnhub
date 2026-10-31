@@ -7,11 +7,45 @@
 <title>EarnHub - Login</title>
 <style>
 *{box-sizing:border-box}
-body{font-family:Arial,sans-serif;background:#eef2ff;display:flex;justify-content:center;align-items:center;min-height:100vh;margin:0;padding:20px;color:#172554}
-.card{background:#fff;padding:28px;border-radius:18px;box-shadow:0 10px 35px #0001;width:100%;max-width:380px;text-align:center}
+body{
+  font-family:Arial,sans-serif;
+  background:#eef2ff;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  min-height:100vh;
+  margin:0;
+  padding:20px;
+  color:#172554
+}
+.card{
+  background:#fff;
+  padding:28px;
+  border-radius:18px;
+  box-shadow:0 10px 35px #0001;
+  width:100%;
+  max-width:380px;
+  text-align:center
+}
 h1{color:#3155d9;margin-top:0}
-input{width:100%;padding:13px;margin:8px 0;border:1px solid #d1d5db;border-radius:9px}
-button{width:100%;padding:13px;background:#3155d9;color:white;border:0;border-radius:9px;margin-top:12px;font-size:16px;cursor:pointer}
+input{
+  width:100%;
+  padding:13px;
+  margin:8px 0;
+  border:1px solid #d1d5db;
+  border-radius:9px
+}
+button{
+  width:100%;
+  padding:13px;
+  background:#3155d9;
+  color:white;
+  border:0;
+  border-radius:9px;
+  margin-top:12px;
+  font-size:16px;
+  cursor:pointer
+}
 button:disabled{opacity:.6}
 .link{color:#3155d9;cursor:pointer}
 #msg{overflow-wrap:anywhere;font-size:14px}
@@ -19,25 +53,36 @@ button:disabled{opacity:.6}
 </style>
 </head>
 <body>
+
 <div class="card">
 <h1>EarnHub</h1>
 <p>Welcome! Sign in or create an account.</p>
 
 <form id="login">
 <h3>Login</h3>
-<input id="loginEmail" type="email" placeholder="Email address" required>
-<input id="loginPassword" type="password" placeholder="Password" required>
+<input id="loginEmail" type="email"
+placeholder="Email address" required>
+<input id="loginPassword" type="password"
+placeholder="Password" required>
 <button type="submit" id="loginBtn">Login</button>
 </form>
 
-<p>New here? <span class="link" id="toggle" role="button" tabindex="0">Create an account</span></p>
+<p>New here?
+<span class="link" id="toggle" role="button" tabindex="0">
+Create an account
+</span>
+</p>
 
 <form id="signup" hidden>
 <h3>Sign Up</h3>
 <input id="name" placeholder="Your name" required>
-<input id="email" type="email" placeholder="Email address" required>
-<input id="password" type="password" minlength="6" placeholder="Create a password (min. 6 characters)" required>
-<input id="referralCode" placeholder="Referral code (optional)" autocomplete="off">
+<input id="email" type="email"
+placeholder="Email address" required>
+<input id="password" type="password"
+minlength="6" placeholder="Create password (min 6 characters)" required>
+<input id="referralCode"
+placeholder="Referral code (optional)"
+autocomplete="off">
 <button type="submit" id="register">Sign Up</button>
 </form>
 
@@ -45,117 +90,153 @@ button:disabled{opacity:.6}
 </div>
 
 <script type="module">
-import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+import { createClient } from
+"https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
 
-const SUPABASE_URL = "https://xzghakgbijoserpsoery.supabase.co";
-const SUPABASE_KEY = "sb_publishable_GPqGktzKZRQpCBCph-YRyQ_PtK5YH6_";
+const SUPABASE_URL =
+"https://xzghakgbijoserpsoery.supabase.co";
+
+const SUPABASE_KEY =
+"sb_publishable_GPqGktzKZRQpCBCph-YRyQ_PtK5YH6_";
+
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 const msg = document.getElementById("msg");
 const signup = document.getElementById("signup");
 const referralInput = document.getElementById("referralCode");
 
-// Pre-fill referral code from a link like auth.html?ref=ABC123
 const params = new URLSearchParams(window.location.search);
-const incomingCode = (params.get("ref") || "").trim().toUpperCase();
-if (incomingCode) {
+const incomingCode =
+(params.get("ref") || "").trim().toUpperCase();
+
+if(incomingCode){
   referralInput.value = incomingCode;
   signup.hidden = false;
 }
 
-function toggleSignup() {
+function toggleSignup(){
   signup.hidden = !signup.hidden;
   msg.textContent = "";
 }
 
 document.getElementById("toggle").onclick = toggleSignup;
-document.getElementById("toggle").onkeydown = (e) => {
-  if (e.key === "Enter" || e.key === " ") {
+
+document.getElementById("toggle").onkeydown = (e)=>{
+  if(e.key === "Enter" || e.key === " "){
     e.preventDefault();
     toggleSignup();
   }
 };
 
-// If a valid session already exists, go to Dashboard.
-const { data: sessionData } = await supabase.auth.getSession();
-if (sessionData.session) {
+const {data:sessionData} =
+await supabase.auth.getSession();
+
+if(sessionData.session){
   window.location.replace("./dashboard.html");
 }
 
-document.getElementById("login").addEventListener("submit", async (e) => {
+document.getElementById("login").addEventListener(
+"submit", async(e)=>{
   e.preventDefault();
+
   const btn = document.getElementById("loginBtn");
   btn.disabled = true;
   msg.textContent = "Logging in...";
 
-  try {
-    const { error } = await supabase.auth.signInWithPassword({
-      email: document.getElementById("loginEmail").value.trim(),
-      password: document.getElementById("loginPassword").value
+  try{
+    const {error} =
+    await supabase.auth.signInWithPassword({
+      email:document.getElementById("loginEmail").value.trim(),
+      password:document.getElementById("loginPassword").value
     });
-    if (error) throw error;
 
-    msg.textContent = "Login successful! Opening Dashboard...";
+    if(error) throw error;
+
     window.location.replace("./dashboard.html");
-  } catch (err) {
+
+  }catch(err){
     msg.textContent = err.message || "Login failed.";
-  } finally {
+  }finally{
     btn.disabled = false;
   }
 });
 
-signup.addEventListener("submit", async (e) => {
+signup.addEventListener("submit",async(e)=>{
   e.preventDefault();
+
   const btn = document.getElementById("register");
   btn.disabled = true;
   msg.textContent = "Creating account...";
 
-  try {
-    const email = document.getElementById("email").value.trim();
-    const password = document.getElementById("password").value;
-    const name = document.getElementById("name").value.trim();
-    const code = referralInput.value.trim().toUpperCase();
+  try{
+    const email =
+    document.getElementById("email").value.trim();
 
-    // Validate a supplied referral code before creating the account.
-    let referrerId = null;
-    if (code) {
-      const { data: referrer, error: refError } = await supabase
-        .from("profiles")
-        .select("id")
-        .eq("referral_code", code)
-        .maybeSingle();
+    const password =
+    document.getElementById("password").value;
 
-      if (refError) throw refError;
-      if (!referrer) throw new Error("Invalid referral code.");
-      referrerId = referrer.id;
-    }
+    const name =
+    document.getElementById("name").value.trim();
 
-    const { data, error } = await supabase.auth.signUp({
+    const code =
+    referralInput.value.trim().toUpperCase();
+
+    const {data,error} = await supabase.auth.signUp({
       email,
       password,
-      options: {
-        emailRedirectTo: "https://nayeemmia03-sudo.github.io/earnhub/auth.html",
-        data: {
-          full_name: name,
-          referral_code: code || null
+      options:{
+        emailRedirectTo:
+        "https://nayeemmia03-sudo.github.io/earnhub/auth.html",
+        data:{
+          full_name:name,
+          referral_code:code || null
         }
       }
     });
 
-    if (error) throw error;
+    if(error) throw error;
 
-    // If email confirmation is enabled, the referral will be applied
-    // after the user confirms email and signs in. Do not award points here.
-    msg.textContent = data.session
-      ? "Account created. Referral bonus is not issued yet. Please continue to Dashboard."
-      : "Account created. Please confirm your email, then log in. Referral bonus is not issued yet.";
-
-    if (data.session) {
-      window.location.replace("./dashboard.html");
+    if(!data.session){
+      msg.textContent =
+      "Account created. Please check your Supabase email confirmation settings and log in.";
+      return;
     }
-  } catch (err) {
+
+    if(code){
+      const {error:processError} =
+      await supabase.rpc("process_my_referral");
+
+      if(processError){
+        msg.textContent =
+        "Account created, but referral could not be applied: " +
+        processError.message;
+        return;
+      }
+
+      const {data:rewardMessage,error:rewardError} =
+      await supabase.rpc("claim_my_referral_reward");
+
+      if(rewardError){
+        msg.textContent =
+        "Account created, but referral reward failed: " +
+        rewardError.message;
+        return;
+      }
+
+      msg.textContent =
+      "Signup successful! " + rewardMessage +
+      ". Opening Dashboard...";
+
+    }else{
+      msg.textContent =
+      "Signup successful! Opening Dashboard...";
+    }
+
+    window.location.replace("./dashboard.html");
+
+  }catch(err){
     msg.textContent = err.message || "Sign up failed.";
-  } finally {
+  }finally{
     btn.disabled = false;
   }
 });
