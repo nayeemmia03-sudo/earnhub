@@ -5,411 +5,382 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#14213d">
 <title>EarnHub Dashboard</title>
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-:root {
-  --primary: #2563eb;
-  --dark: #14213d;
-  --bg: #f1f5ff;
-  --card: #ffffff;
-  --text: #172033;
-  --muted: #64748b;
-  --green: #16a34a;
-  --red: #dc2626;
+:root{
+  --primary:#2563eb;
+  --dark:#14213d;
+  --bg:#f1f5ff;
+  --card:#fff;
+  --text:#172033;
+  --muted:#64748b;
+  --green:#16a34a;
+  --red:#dc2626;
 }
 
-* { box-sizing: border-box; }
+*{box-sizing:border-box}
 
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  padding-bottom: 90px;
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  padding-bottom:90px;
 }
 
-header {
-  background: var(--dark);
-  color: white;
-  padding: 15px;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  box-shadow: 0 3px 12px #0002;
+header{
+  background:var(--dark);
+  color:#fff;
+  padding:15px;
+  position:sticky;
+  top:0;
+  z-index:100;
+  box-shadow:0 3px 12px #0002;
 }
 
-.header-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  max-width: 1000px;
-  margin: auto;
+.header-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  max-width:1000px;
+  margin:auto;
 }
 
-.brand {
-  font-size: 24px;
-  font-weight: bold;
+.brand{font-size:24px;font-weight:bold}
+
+.brand small{
+  display:block;
+  font-size:12px;
+  font-weight:normal;
+  margin-top:4px;
+  color:#cbd5e1;
 }
 
-.brand small {
-  display: block;
-  font-size: 12px;
-  font-weight: normal;
-  margin-top: 4px;
-  color: #cbd5e1;
+button{
+  cursor:pointer;
+  border:none;
+  border-radius:9px;
+  padding:12px 14px;
+  background:var(--primary);
+  color:white;
+  font-weight:bold;
+  font-size:14px;
 }
 
-button {
-  cursor: pointer;
-  border: none;
-  border-radius: 9px;
-  padding: 12px 14px;
-  background: var(--primary);
-  color: white;
-  font-weight: bold;
-  font-size: 14px;
+button:disabled{opacity:.6;cursor:not-allowed}
+.menu-button{background:#334155}
+
+.top-menu{
+  display:none;
+  max-width:1000px;
+  margin:15px auto 0;
+  grid-template-columns:repeat(3,1fr);
+  gap:8px;
 }
 
-button:disabled {
-  opacity: .6;
-  cursor: not-allowed;
+.top-menu.open{display:grid}
+
+.top-menu button{
+  background:#243653;
+  border:1px solid #475569;
 }
 
-.menu-button { background: #334155; }
+.top-menu button.active{background:var(--primary)}
 
-.top-menu {
-  display: none;
-  max-width: 1000px;
-  margin: 15px auto 0;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
+.container{
+  max-width:1000px;
+  margin:20px auto;
+  padding:0 14px;
 }
 
-.top-menu.open { display: grid; }
+.view-section{min-height:55vh}
+.hidden{display:none!important}
 
-.top-menu button {
-  background: #243653;
-  border: 1px solid #475569;
+.page-title{margin:0 0 6px;font-size:25px}
+
+.subtitle{
+  margin:0 0 20px;
+  color:var(--muted);
+  font-size:14px;
+  line-height:1.6;
 }
 
-.top-menu button.active { background: var(--primary); }
-
-.container {
-  max-width: 1000px;
-  margin: 20px auto;
-  padding: 0 14px;
+.card{
+  background:var(--card);
+  border-radius:16px;
+  padding:18px;
+  margin-bottom:16px;
+  box-shadow:0 4px 16px #1e293b0c;
+  border:1px solid #e2e8f0;
+  min-width:0;
 }
 
-.view-section { min-height: 55vh; }
-.hidden { display: none !important; }
+.card h2{font-size:19px;margin:0 0 15px}
+.card h3{font-size:16px;margin:0 0 8px}
 
-.page-title {
-  margin: 0 0 6px;
-  font-size: 25px;
+.balance-number{
+  font-size:32px;
+  color:var(--green);
+  font-weight:bold;
+  margin:10px 0;
+  overflow-wrap:anywhere;
 }
 
-.subtitle {
-  margin: 0 0 20px;
-  color: var(--muted);
-  font-size: 14px;
-  line-height: 1.6;
+.muted{
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.6;
 }
 
-.card {
-  background: var(--card);
-  border-radius: 16px;
-  padding: 18px;
-  margin-bottom: 16px;
-  box-shadow: 0 4px 16px #1e293b0c;
-  border: 1px solid #e2e8f0;
-  min-width: 0;
+.status{
+  display:inline-block;
+  background:#dcfce7;
+  color:#166534;
+  padding:6px 10px;
+  border-radius:20px;
+  font-size:12px;
+  font-weight:bold;
 }
 
-.card h2 {
-  font-size: 19px;
-  margin: 0 0 15px;
+input,select,textarea{
+  width:100%;
+  padding:12px;
+  border:1px solid #cbd5e1;
+  border-radius:9px;
+  margin:6px 0 12px;
+  font-size:14px;
+  background:#fff;
+  color:var(--text);
 }
 
-.card h3 {
-  font-size: 16px;
-  margin: 0 0 8px;
+textarea{min-height:80px;resize:vertical}
+label{font-size:13px;font-weight:bold}
+
+button.secondary{background:#475569}
+button.success{background:var(--green)}
+button.danger{background:var(--red)}
+button.full{width:100%}
+
+.item{
+  padding:13px 0;
+  border-bottom:1px solid #e2e8f0;
+  overflow-wrap:anywhere;
 }
 
-.balance-number {
-  font-size: 32px;
-  color: var(--green);
-  font-weight: bold;
-  margin: 10px 0;
-  overflow-wrap: anywhere;
+.item:last-child{border-bottom:none}
+
+.item p{
+  margin:7px 0;
+  line-height:1.5;
+  font-size:14px;
 }
 
-.muted {
-  color: var(--muted);
-  font-size: 13px;
-  line-height: 1.6;
+.item-actions{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-top:10px;
 }
 
-.status {
-  display: inline-block;
-  background: #dcfce7;
-  color: #166534;
-  padding: 6px 10px;
-  border-radius: 20px;
-  font-size: 12px;
-  font-weight: bold;
+.item-actions button{
+  flex:1;
+  min-width:90px;
 }
 
-input, select, textarea {
-  width: 100%;
-  padding: 12px;
-  border: 1px solid #cbd5e1;
-  border-radius: 9px;
-  margin: 6px 0 12px;
-  font-size: 14px;
-  background: white;
-  color: var(--text);
+.notice{
+  padding:12px;
+  border-radius:9px;
+  background:#eff6ff;
+  color:#1d4ed8;
+  font-size:13px;
+  line-height:1.6;
+  margin:12px 0;
+  overflow-wrap:anywhere;
 }
 
-textarea {
-  min-height: 80px;
-  resize: vertical;
-}
+.error{color:var(--red)}
 
-label {
-  font-size: 13px;
-  font-weight: bold;
-}
-
-button.secondary { background: #475569; }
-button.success { background: var(--green); }
-button.danger { background: var(--red); }
-button.full { width: 100%; }
-
-.item {
-  padding: 13px 0;
-  border-bottom: 1px solid #e2e8f0;
-  overflow-wrap: anywhere;
-}
-
-.item:last-child { border-bottom: none; }
-
-.item p {
-  margin: 7px 0;
-  line-height: 1.5;
-  font-size: 14px;
-}
-
-.item-actions {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  margin-top: 10px;
-}
-
-.item-actions button {
-  flex: 1;
-  min-width: 90px;
-}
-
-.notice {
-  padding: 12px;
-  border-radius: 9px;
-  background: #eff6ff;
-  color: #1d4ed8;
-  font-size: 13px;
-  line-height: 1.6;
-  margin: 12px 0;
-  overflow-wrap: anywhere;
-}
-
-.error { color: var(--red); }
-
-/* HOME HERO */
-.hero {
-  position: relative;
-  overflow: hidden;
-  border-radius: 24px;
-  padding: 28px 22px;
-  margin-bottom: 20px;
-  color: white;
+.hero{
+  position:relative;
+  overflow:hidden;
+  border-radius:24px;
+  padding:28px 22px;
+  margin-bottom:20px;
+  color:white;
   background:
-    radial-gradient(circle at 90% 10%, #60a5fa88, transparent 35%),
-    linear-gradient(135deg, #14213d 0%, #1d4ed8 65%, #0f766e 120%);
-  box-shadow: 0 12px 30px #14213d25;
+    radial-gradient(circle at 90% 10%,#60a5fa88,transparent 35%),
+    linear-gradient(135deg,#14213d 0%,#1d4ed8 65%,#0f766e 120%);
+  box-shadow:0 12px 30px #14213d25;
 }
 
-.hero::after {
-  content: "✦";
-  position: absolute;
-  right: 18px;
-  top: 5px;
-  font-size: 100px;
-  color: #ffffff12;
-  pointer-events: none;
+.hero::after{
+  content:"✦";
+  position:absolute;
+  right:18px;
+  top:5px;
+  font-size:100px;
+  color:#ffffff12;
+  pointer-events:none;
 }
 
-.hero-badge {
-  display: inline-block;
-  background: #ffffff20;
-  border: 1px solid #ffffff40;
-  border-radius: 30px;
-  padding: 7px 12px;
-  font-size: 12px;
-  margin-bottom: 16px;
+.hero-badge{
+  display:inline-block;
+  background:#ffffff20;
+  border:1px solid #ffffff40;
+  border-radius:30px;
+  padding:7px 12px;
+  font-size:12px;
+  margin-bottom:16px;
 }
 
-.hero h1 {
-  font-size: 30px;
-  line-height: 1.2;
-  margin: 0 0 12px;
-  max-width: 420px;
+.hero h1{
+  font-size:30px;
+  line-height:1.2;
+  margin:0 0 12px;
+  max-width:420px;
 }
 
-.hero p {
-  font-size: 14px;
-  line-height: 1.8;
-  color: #e0eaff;
-  max-width: 450px;
-  margin: 0 0 20px;
+.hero p{
+  font-size:14px;
+  line-height:1.8;
+  color:#e0eaff;
+  max-width:450px;
+  margin:0 0 20px;
 }
 
-.hero .hero-button {
-  background: white;
-  color: #1d4ed8;
-  padding: 13px 18px;
+.hero .hero-button{
+  background:#fff;
+  color:#1d4ed8;
+  padding:13px 18px;
 }
 
-.hero-stats {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
-  margin-top: 22px;
+.hero-stats{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:8px;
+  margin-top:22px;
 }
 
-.hero-stat {
-  padding: 12px 8px;
-  background: #ffffff13;
-  border: 1px solid #ffffff25;
-  border-radius: 12px;
-  text-align: center;
+.hero-stat{
+  padding:12px 8px;
+  background:#ffffff13;
+  border:1px solid #ffffff25;
+  border-radius:12px;
+  text-align:center;
 }
 
-.hero-stat strong {
-  display: block;
-  font-size: 16px;
-  margin-bottom: 5px;
+.hero-stat strong{
+  display:block;
+  font-size:16px;
+  margin-bottom:5px;
 }
 
-.hero-stat span {
-  font-size: 11px;
-  color: #dbeafe;
+.hero-stat span{
+  font-size:11px;
+  color:#dbeafe;
 }
 
-.section-label {
-  font-size: 18px;
-  margin: 24px 0 12px;
+.section-label{font-size:18px;margin:24px 0 12px}
+
+.feature-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:12px;
 }
 
-.feature-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
+.feature-button{
+  background:#fff;
+  color:var(--text);
+  border:1px solid #e2e8f0;
+  border-radius:16px;
+  padding:18px 14px;
+  min-height:125px;
+  text-align:left;
+  box-shadow:0 4px 14px #1e293b08;
+  transition:transform .15s;
 }
 
-.feature-button {
-  background: white;
-  color: var(--text);
-  border: 1px solid #e2e8f0;
-  border-radius: 16px;
-  padding: 18px 14px;
-  min-height: 125px;
-  text-align: left;
-  box-shadow: 0 4px 14px #1e293b08;
-  transition: transform .15s;
+.feature-button:active{transform:scale(.98)}
+
+.feature-icon{
+  display:block;
+  font-size:28px;
+  margin-bottom:12px;
 }
 
-.feature-button:active { transform: scale(.98); }
-
-.feature-icon {
-  display: block;
-  font-size: 28px;
-  margin-bottom: 12px;
+.feature-button strong{
+  display:block;
+  font-size:15px;
+  margin-bottom:6px;
 }
 
-.feature-button strong {
-  display: block;
-  font-size: 15px;
-  margin-bottom: 6px;
+.feature-button small{
+  color:var(--muted);
+  font-weight:normal;
+  font-size:12px;
+  line-height:1.5;
 }
 
-.feature-button small {
-  color: var(--muted);
-  font-weight: normal;
-  font-size: 12px;
-  line-height: 1.5;
+.feature-button.admin-feature{
+  grid-column:1/-1;
+  min-height:auto;
 }
 
-.feature-button.admin-feature {
-  grid-column: 1 / -1;
-  min-height: auto;
+.bottom-nav{
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  z-index:200;
+  background:#fff;
+  display:grid;
+  grid-template-columns:repeat(6,1fr);
+  padding:8px 2px calc(8px + env(safe-area-inset-bottom));
+  box-shadow:0 -3px 15px #0001;
+  border-top:1px solid #e2e8f0;
 }
 
-.bottom-nav {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  z-index: 200;
-  background: white;
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  padding: 8px 2px calc(8px + env(safe-area-inset-bottom));
-  box-shadow: 0 -3px 15px #0001;
-  border-top: 1px solid #e2e8f0;
+.bottom-nav button{
+  background:transparent;
+  color:#64748b;
+  border-radius:8px;
+  padding:7px 1px;
+  font-size:10px;
+  line-height:1.4;
 }
 
-.bottom-nav button {
-  background: transparent;
-  color: #64748b;
-  border-radius: 8px;
-  padding: 7px 1px;
-  font-size: 10px;
-  line-height: 1.4;
+.bottom-nav button span{
+  display:block;
+  font-size:19px;
+  margin-bottom:2px;
 }
 
-.bottom-nav button span {
-  display: block;
-  font-size: 19px;
-  margin-bottom: 2px;
+.bottom-nav button.active{
+  color:var(--primary);
+  background:#eff6ff;
 }
 
-.bottom-nav button.active {
-  color: var(--primary);
-  background: #eff6ff;
+footer{
+  text-align:center;
+  color:var(--muted);
+  font-size:12px;
+  padding:18px 10px;
 }
 
-footer {
-  text-align: center;
-  color: var(--muted);
-  font-size: 12px;
-  padding: 18px 10px;
+@media(min-width:700px){
+  .feature-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .hero{padding:38px}
+  .hero h1{font-size:38px}
 }
 
-@media (min-width: 700px) {
-  .feature-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-  .hero { padding: 38px; }
-  .hero h1 { font-size: 38px; }
-}
-
-@media (max-width: 380px) {
-  .brand { font-size: 21px; }
-  .hero { padding: 23px 17px; }
-  .hero h1 { font-size: 26px; }
-  .feature-grid { gap: 9px; }
-  .feature-button { padding: 14px 11px; }
-  .bottom-nav button { font-size: 9px; }
+@media(max-width:380px){
+  .brand{font-size:21px}
+  .hero{padding:23px 17px}
+  .hero h1{font-size:26px}
+  .feature-grid{gap:9px}
+  .feature-button{padding:14px 11px}
+  .bottom-nav button{font-size:9px}
 }
 </style>
 </head>
@@ -439,273 +410,282 @@ footer {
 
 <main class="container">
 
-  <!-- HOME: HERO AND SHORTCUTS ONLY -->
-  <section class="view-section" id="view-home">
+<section class="view-section" id="view-home">
+  <div class="hero">
+    <span class="hero-badge">✦ WELCOME TO EARNHUB</span>
+    <h1>Complete Tasks.<br>Earn Rewards.</h1>
+    <p>
+      Welcome to your earning dashboard. Explore available tasks,
+      track your points and manage your EarnHub account in one place.
+    </p>
 
-    <div class="hero">
-      <span class="hero-badge">✦ WELCOME TO EARNHUB</span>
-      <h1>Complete Tasks.<br>Earn Rewards.</h1>
-      <p>
-        Welcome to your earning dashboard. Explore available tasks,
-        track your points and manage your EarnHub account in one place.
-      </p>
-      <button class="hero-button" type="button" data-view="tasks">
-        Explore Tasks →
-      </button>
+    <button class="hero-button" type="button" data-view="tasks">
+      Explore Tasks →
+    </button>
 
-      <div class="hero-stats">
-        <div class="hero-stat">
-          <strong>📋 Tasks</strong>
-          <span>Explore opportunities</span>
-        </div>
-        <div class="hero-stat">
-          <strong>🎁 Rewards</strong>
-          <span>Track your points</span>
-        </div>
-        <div class="hero-stat">
-          <strong>👥 Referral</strong>
-          <span>Invite your friends</span>
-        </div>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <strong>📋 Tasks</strong>
+        <span>Explore opportunities</span>
+      </div>
+      <div class="hero-stat">
+        <strong>🎁 Rewards</strong>
+        <span>Track your points</span>
+      </div>
+      <div class="hero-stat">
+        <strong>👥 Referral</strong>
+        <span>Invite your friends</span>
       </div>
     </div>
+  </div>
 
-    <h2 class="section-label">Explore EarnHub</h2>
+  <h2 class="section-label">Explore EarnHub</h2>
 
-    <div class="feature-grid">
-      <button class="feature-button" type="button" data-view="tasks">
-        <span class="feature-icon">📋</span>
-        <strong>Available Tasks</strong>
-        <small>Find tasks and submit your work.</small>
+  <div class="feature-grid">
+    <button class="feature-button" type="button" data-view="tasks">
+      <span class="feature-icon">📋</span>
+      <strong>Available Tasks</strong>
+      <small>Find tasks and submit your work.</small>
+    </button>
+
+    <button class="feature-button" type="button" data-view="referral">
+      <span class="feature-icon">👥</span>
+      <strong>Referral Center</strong>
+      <small>Copy and share your referral link.</small>
+    </button>
+
+    <button class="feature-button" type="button" data-view="wallet">
+      <span class="feature-icon">💰</span>
+      <strong>My Wallet</strong>
+      <small>View your current points balance.</small>
+    </button>
+
+    <button class="feature-button" type="button" data-view="withdraw">
+      <span class="feature-icon">💸</span>
+      <strong>Withdraw</strong>
+      <small>Submit and check withdrawal requests.</small>
+    </button>
+
+    <button class="feature-button" type="button" data-view="profile">
+      <span class="feature-icon">👤</span>
+      <strong>My Profile</strong>
+      <small>View account details and sign out.</small>
+    </button>
+
+    <button class="feature-button" type="button" data-view="history">
+      <span class="feature-icon">📜</span>
+      <strong>Activity History</strong>
+      <small>Review tasks and withdrawal requests.</small>
+    </button>
+
+    <button class="feature-button admin-feature hidden"
+      id="homeAdminButton" type="button" data-view="admin">
+      <span class="feature-icon">🛡️</span>
+      <strong>Admin Panel</strong>
+      <small>Manage tasks, submissions and withdrawal requests.</small>
+    </button>
+  </div>
+
+  <div class="notice" style="margin-top:18px">
+    EarnHub demo: points and conversion values are illustrative.
+    Real cash payments are not guaranteed.
+  </div>
+</section>
+
+<section class="view-section hidden" id="view-tasks">
+  <h1 class="page-title">📋 Tasks</h1>
+  <p class="subtitle">Complete available tasks and submit them for review.</p>
+
+  <div class="card">
+    <h2>Available Tasks</h2>
+    <div id="taskList">Loading tasks...</div>
+  </div>
+
+  <div class="card">
+    <h2>My Submissions</h2>
+    <div id="mySubmissions">Loading submissions...</div>
+  </div>
+</section>
+
+<section class="view-section hidden" id="view-referral">
+  <h1 class="page-title">👥 Referral Center</h1>
+  <p class="subtitle">Invite friends to EarnHub.</p>
+
+  <div class="card">
+    <h2>My Referral Code</h2>
+    <input id="referralCode" readonly placeholder="Loading referral code...">
+    <button class="full" id="copyReferralCode" type="button">Copy Referral Code</button>
+
+    <h2 style="margin-top:20px">My Referral Link</h2>
+    <input id="referralLink" readonly placeholder="Loading referral link...">
+    <button class="full" id="copyReferralLink" type="button">Copy Referral Link</button>
+
+    <div class="notice">
+      Referral rewards depend on the configured referral rules.
+      A reward is not cash unless a real payment system is configured.
+    </div>
+
+    <button class="full success" id="claimReferral" type="button">
+      Claim Referral Bonus
+    </button>
+    <p id="referralMessage" class="muted"></p>
+  </div>
+</section>
+
+<section class="view-section hidden" id="view-wallet">
+  <h1 class="page-title">💰 My Wallet</h1>
+  <p class="subtitle">View your current points balance.</p>
+
+  <div class="card">
+    <h2>Available Balance</h2>
+    <div class="balance-number"><span id="walletPoints">0</span> points</div>
+    <p id="walletValue" class="muted">Illustrative value: ৳0</p>
+
+    <div class="notice">
+      Points are not cash. The displayed conversion is illustrative
+      and does not guarantee payment.
+    </div>
+
+    <button class="full" type="button" data-view="withdraw">
+      Request Withdrawal
+    </button>
+  </div>
+
+  <div class="card">
+    <h2>Withdrawal History</h2>
+    <div id="withdrawHistory">Loading withdrawal history...</div>
+  </div>
+</section>
+
+<section class="view-section hidden" id="view-withdraw">
+  <h1 class="page-title">💸 Withdraw Points</h1>
+  <p class="subtitle">Submit a withdrawal request for admin review.</p>
+
+  <div class="card">
+    <h2>Withdrawal Request</h2>
+    <p>Available balance: <strong id="withdrawAvailable">0 points</strong></p>
+    <p class="muted">Minimum request: 2,000 points (illustrative ৳100)</p>
+
+    <form id="withdrawForm">
+      <label for="withdrawPoints">Points to withdraw</label>
+      <input id="withdrawPoints" type="number" min="2000" step="1"
+        placeholder="Enter points" required>
+
+      <label for="paymentMethod">Payment method</label>
+      <select id="paymentMethod" required>
+        <option value="">Choose method</option>
+        <option value="bKash">bKash</option>
+        <option value="Nagad">Nagad</option>
+        <option value="Binance">Binance</option>
+      </select>
+
+      <label for="paymentAccount">Payment account details</label>
+      <input id="paymentAccount" type="text"
+        placeholder="Enter your payment number or account" required>
+
+      <button class="full" type="submit" id="withdrawSubmit">
+        Submit Withdrawal Request
       </button>
+    </form>
 
-      <button class="feature-button" type="button" data-view="referral">
-        <span class="feature-icon">👥</span>
-        <strong>Referral Center</strong>
-        <small>Copy and share your referral link.</small>
-      </button>
+    <p id="withdrawMessage" class="muted"></p>
+  </div>
 
-      <button class="feature-button" type="button" data-view="wallet">
-        <span class="feature-icon">💰</span>
-        <strong>My Wallet</strong>
-        <small>View your current points balance.</small>
-      </button>
+  <div class="card">
+    <h2>Recent Withdrawal Requests</h2>
+    <div id="withdrawHistory2">Loading withdrawal history...</div>
+  </div>
+</section>
 
-      <button class="feature-button" type="button" data-view="withdraw">
-        <span class="feature-icon">💸</span>
-        <strong>Withdraw</strong>
-        <small>Submit and check withdrawal requests.</small>
-      </button>
+<section class="view-section hidden" id="view-profile">
+  <h1 class="page-title">👤 My Profile</h1>
+  <p class="subtitle">Your EarnHub account information.</p>
 
-      <button class="feature-button" type="button" data-view="profile">
-        <span class="feature-icon">👤</span>
-        <strong>My Profile</strong>
-        <small>View account details and sign out.</small>
-      </button>
+  <div class="card">
+    <h2>Account Details</h2>
+    <p class="muted">Email address</p>
+    <p id="profileEmail" style="overflow-wrap:anywhere">Loading...</p>
 
-      <button class="feature-button" type="button" data-view="history">
-        <span class="feature-icon">📜</span>
-        <strong>Activity History</strong>
-        <small>Review tasks and withdrawal requests.</small>
-      </button>
+    <p class="muted">User ID</p>
+    <p id="profileId" style="font-size:12px;overflow-wrap:anywhere">Loading...</p>
 
-      <button class="feature-button admin-feature hidden" id="homeAdminButton"
-        type="button" data-view="admin">
-        <span class="feature-icon">🛡️</span>
-        <strong>Admin Panel</strong>
-        <small>Manage tasks, submissions and withdrawal requests.</small>
-      </button>
-    </div>
+    <p class="muted">Account status</p>
+    <p><span class="status" id="profileStatus">Checking...</span></p>
 
-    <div class="notice" style="margin-top:18px">
-      EarnHub demo: points and conversion values are illustrative.
-      Real cash payments are not guaranteed.
-    </div>
-  </section>
+    <button class="full danger" id="logoutButton" type="button">Logout</button>
+  </div>
+</section>
 
-  <!-- TASKS -->
-  <section class="view-section hidden" id="view-tasks">
-    <h1 class="page-title">📋 Tasks</h1>
-    <p class="subtitle">Complete available tasks and submit them for review.</p>
+<section class="view-section hidden" id="view-history">
+  <h1 class="page-title">📜 My History</h1>
+  <p class="subtitle">Your task submissions and withdrawal requests.</p>
 
-    <div class="card">
-      <h2>Available Tasks</h2>
-      <div id="taskList">Loading tasks...</div>
-    </div>
+  <div class="card">
+    <h2>Task Submission History</h2>
+    <div id="historySubmissions">Loading...</div>
+  </div>
 
-    <div class="card">
-      <h2>My Submissions</h2>
-      <div id="mySubmissions">Loading submissions...</div>
-    </div>
-  </section>
+  <div class="card">
+    <h2>Withdrawal History</h2>
+    <div id="historyWithdrawals">Loading...</div>
+  </div>
+</section>
 
-  <!-- REFERRAL -->
-  <section class="view-section hidden" id="view-referral">
-    <h1 class="page-title">👥 Referral Center</h1>
-    <p class="subtitle">Invite friends to EarnHub.</p>
+<section class="view-section hidden" id="view-admin">
+  <h1 class="page-title">🛡️ Admin Panel</h1>
+  <p class="subtitle">Manage tasks, submissions and withdrawal requests.</p>
 
-    <div class="card">
-      <h2>My Referral Code</h2>
-      <input id="referralCode" readonly placeholder="Loading referral code...">
-      <button class="full" id="copyReferralCode" type="button">Copy Referral Code</button>
+  <div class="card">
+    <h2>Create Task</h2>
 
-      <h2 style="margin-top:20px">My Referral Link</h2>
-      <input id="referralLink" readonly placeholder="Loading referral link...">
-      <button class="full" id="copyReferralLink" type="button">Copy Referral Link</button>
+    <form id="createTaskForm">
+      <label for="newTaskTitle">Task title</label>
+      <input id="newTaskTitle" required placeholder="Enter task title">
 
-      <div class="notice">
-        Referral rewards depend on the configured referral rules.
-        A reward is not cash unless a real payment system is configured.
-      </div>
+      <label for="newTaskDescription">Task description</label>
+      <textarea id="newTaskDescription" required
+        placeholder="Describe the task"></textarea>
 
-      <button class="full success" id="claimReferral" type="button">
-        Claim Referral Bonus
-      </button>
-      <p id="referralMessage" class="muted"></p>
-    </div>
-  </section>
+      <label for="newTaskReward">Reward points</label>
+      <input id="newTaskReward" type="number" min="1" required
+        placeholder="Reward points">
 
-  <!-- WALLET -->
-  <section class="view-section hidden" id="view-wallet">
-    <h1 class="page-title">💰 My Wallet</h1>
-    <p class="subtitle">View your current points balance.</p>
+      <button class="full" type="submit">Create Task</button>
+    </form>
 
-    <div class="card">
-      <h2>Available Balance</h2>
-      <div class="balance-number"><span id="walletPoints">0</span> points</div>
-      <p id="walletValue" class="muted">Illustrative value: ৳0</p>
+    <p id="createTaskMessage" class="muted"></p>
+  </div>
 
-      <div class="notice">
-        Points are not cash. The displayed conversion is illustrative
-        and does not guarantee payment.
-      </div>
+  <!-- TASK EDIT AND DELETE SECTION -->
+  <div class="card">
+    <h2>Manage Tasks — Edit / Delete</h2>
 
-      <button class="full" type="button" data-view="withdraw">
-        Request Withdrawal
-      </button>
-    </div>
+    <p class="muted">
+      এখান থেকে যেকোনো টাস্কের নাম, বিবরণ, পয়েন্ট ও Active status
+      পরিবর্তন অথবা টাস্ক ডিলিট করতে পারবে।
+    </p>
 
-    <div class="card">
-      <h2>Withdrawal History</h2>
-      <div id="withdrawHistory">Loading withdrawal history...</div>
-    </div>
-  </section>
+    <div id="adminTaskList">Loading tasks...</div>
 
-  <!-- WITHDRAW -->
-  <section class="view-section hidden" id="view-withdraw">
-    <h1 class="page-title">💸 Withdraw Points</h1>
-    <p class="subtitle">Submit a withdrawal request for admin review.</p>
+    <button class="full secondary" id="refreshAdminTasks" type="button">
+      🔄 Refresh Task List
+    </button>
+  </div>
 
-    <div class="card">
-      <h2>Withdrawal Request</h2>
-      <p>Available balance: <strong id="withdrawAvailable">0 points</strong></p>
-      <p class="muted">Minimum request: 2,000 points (illustrative ৳100)</p>
+  <div class="card">
+    <h2>Pending Task Submissions</h2>
+    <div id="adminSubmissions">Loading...</div>
+  </div>
 
-      <form id="withdrawForm">
-        <label for="withdrawPoints">Points to withdraw</label>
-        <input id="withdrawPoints" type="number" min="2000" step="1"
-          placeholder="Enter points" required>
+  <div class="card">
+    <h2>Pending Withdrawals</h2>
+    <div id="adminWithdrawals">Loading...</div>
+  </div>
+</section>
 
-        <label for="paymentMethod">Payment method</label>
-        <select id="paymentMethod" required>
-          <option value="">Choose method</option>
-          <option value="bKash">bKash</option>
-          <option value="Nagad">Nagad</option>
-          <option value="Binance">Binance</option>
-        </select>
-
-        <label for="paymentAccount">Payment account details</label>
-        <input id="paymentAccount" type="text"
-          placeholder="Enter your payment number or account" required>
-
-        <button class="full" type="submit" id="withdrawSubmit">
-          Submit Withdrawal Request
-        </button>
-      </form>
-
-      <p id="withdrawMessage" class="muted"></p>
-    </div>
-
-    <div class="card">
-      <h2>Recent Withdrawal Requests</h2>
-      <div id="withdrawHistory2">Loading withdrawal history...</div>
-    </div>
-  </section>
-
-  <!-- PROFILE -->
-  <section class="view-section hidden" id="view-profile">
-    <h1 class="page-title">👤 My Profile</h1>
-    <p class="subtitle">Your EarnHub account information.</p>
-
-    <div class="card">
-      <h2>Account Details</h2>
-      <p class="muted">Email address</p>
-      <p id="profileEmail" style="overflow-wrap:anywhere">Loading...</p>
-
-      <p class="muted">User ID</p>
-      <p id="profileId" style="font-size:12px;overflow-wrap:anywhere">Loading...</p>
-
-      <p class="muted">Account status</p>
-      <p><span class="status" id="profileStatus">Checking...</span></p>
-
-      <button class="full danger" id="logoutButton" type="button">Logout</button>
-    </div>
-  </section>
-
-  <!-- HISTORY -->
-  <section class="view-section hidden" id="view-history">
-    <h1 class="page-title">📜 My History</h1>
-    <p class="subtitle">Your task submissions and withdrawal requests.</p>
-
-    <div class="card">
-      <h2>Task Submission History</h2>
-      <div id="historySubmissions">Loading...</div>
-    </div>
-
-    <div class="card">
-      <h2>Withdrawal History</h2>
-      <div id="historyWithdrawals">Loading...</div>
-    </div>
-  </section>
-
-  <!-- ADMIN -->
-  <section class="view-section hidden" id="view-admin">
-    <h1 class="page-title">🛡️ Admin Panel</h1>
-    <p class="subtitle">Manage tasks, submissions and withdrawal requests.</p>
-
-    <div class="card">
-      <h2>Create Task</h2>
-
-      <form id="createTaskForm">
-        <label for="newTaskTitle">Task title</label>
-        <input id="newTaskTitle" required placeholder="Enter task title">
-
-        <label for="newTaskDescription">Task description</label>
-        <textarea id="newTaskDescription" required placeholder="Describe the task"></textarea>
-
-        <label for="newTaskReward">Reward points</label>
-        <input id="newTaskReward" type="number" min="1" required placeholder="Reward points">
-
-        <button class="full" type="submit">Create Task</button>
-      </form>
-
-      <p id="createTaskMessage" class="muted"></p>
-    </div>
-
-    <div class="card">
-      <h2>Pending Task Submissions</h2>
-      <div id="adminSubmissions">Loading...</div>
-    </div>
-
-    <div class="card">
-      <h2>Pending Withdrawals</h2>
-      <div id="adminWithdrawals">Loading...</div>
-    </div>
-  </section>
-
-  <footer>EarnHub · Demo earning dashboard</footer>
+<footer>EarnHub · Demo earning dashboard</footer>
 </main>
 
-<!-- BOTTOM NAVIGATION -->
 <nav class="bottom-nav" aria-label="Main navigation">
   <button class="active" type="button" data-view="home"><span>🏠</span>Home</button>
   <button type="button" data-view="tasks"><span>📋</span>Tasks</button>
@@ -736,7 +716,7 @@ function escapeHTML(value) {
     ">": "&gt;",
     '"': "&quot;",
     "'": "&#039;"
-  })[ch]);
+  }[ch]));
 }
 
 function showMessage(id, message, isError = false) {
@@ -753,10 +733,7 @@ function showView(view) {
   ];
 
   if (!allowedViews.includes(view)) view = "home";
-
-  if (view === "admin" && !isAdmin) {
-    view = "home";
-  }
+  if (view === "admin" && !isAdmin) view = "home";
 
   document.querySelectorAll(".view-section").forEach(section => {
     section.classList.toggle("hidden", section.id !== "view-" + view);
@@ -810,6 +787,7 @@ async function loadProfile() {
     "Illustrative value: ৳" + (currentPoints * 50 / 1000).toFixed(2);
 }
 
+/* LOAD ACTIVE TASKS FOR USERS */
 async function loadTasks() {
   const { data, error } = await db
     .from("tasks")
@@ -836,11 +814,14 @@ async function loadTasks() {
       <h3>${escapeHTML(task.title)}</h3>
       <p>${escapeHTML(task.description)}</p>
       <p><strong>Reward: ${Number(task.reward_points || 0)} points</strong></p>
-      <button type="button" onclick="submitTask(${Number(task.id)})">Submit Task</button>
+      <button type="button" onclick="submitTask(${Number(task.id)})">
+        Submit Task
+      </button>
     </div>
   `).join("");
 }
 
+/* SUBMIT TASK */
 async function submitTask(taskId) {
   if (!currentUser) return;
 
@@ -880,6 +861,7 @@ async function submitTask(taskId) {
   if (isAdmin) await loadAdminSubmissions();
 }
 
+/* LOAD USER SUBMISSIONS */
 async function loadSubmissions() {
   const { data, error } = await db
     .from("task_submissions")
@@ -912,8 +894,10 @@ async function loadSubmissions() {
   $("historySubmissions").innerHTML = html;
 }
 
+/* REFERRAL */
 async function loadReferral() {
   const code = currentUser.id.replace(/-/g, "").slice(0, 8).toUpperCase();
+
   const url = new URL("auth.html", window.location.href);
   url.searchParams.set("ref", code);
 
@@ -953,13 +937,16 @@ $("claimReferral").addEventListener("click", async () => {
 
     showMessage("referralMessage", "Referral reward request processed.");
     await loadProfile();
+
   } catch (error) {
     showMessage("referralMessage", error.message || "Request failed.", true);
+
   } finally {
     button.disabled = false;
   }
 });
 
+/* WITHDRAWAL HISTORY */
 async function loadWithdrawals() {
   const { data, error } = await db
     .from("withdraw_requests")
@@ -971,7 +958,8 @@ async function loadWithdrawals() {
     console.error("Withdrawal history error:", error);
 
     ["withdrawHistory", "withdrawHistory2", "historyWithdrawals"].forEach(id => {
-      $(id).textContent = "Could not load withdrawal history. Check table permissions.";
+      $(id).textContent =
+        "Could not load withdrawal history. Check table permissions.";
     });
 
     return;
@@ -999,6 +987,7 @@ async function loadWithdrawals() {
   });
 }
 
+/* CREATE WITHDRAWAL REQUEST */
 $("withdrawForm").addEventListener("submit", async event => {
   event.preventDefault();
 
@@ -1038,17 +1027,21 @@ $("withdrawForm").addEventListener("submit", async event => {
     }
 
     showMessage("withdrawMessage", "Withdrawal request submitted for review.");
+
     $("withdrawForm").reset();
 
     await loadProfile();
     await loadWithdrawals();
+
   } catch (error) {
     showMessage("withdrawMessage", error.message || "Request failed.", true);
+
   } finally {
     button.disabled = false;
   }
 });
 
+/* CHECK ADMIN PERMISSION */
 async function checkAdmin() {
   const { data, error } = await db
     .from("admin_users")
@@ -1067,11 +1060,189 @@ async function checkAdmin() {
   $("homeAdminButton").classList.toggle("hidden", !isAdmin);
 
   if (isAdmin) {
+    await loadAdminTasks();
     await loadAdminSubmissions();
     await loadAdminWithdrawals();
   }
 }
 
+/* ========================================
+   ADMIN: LOAD ALL TASKS
+======================================== */
+async function loadAdminTasks() {
+  if (!isAdmin) return;
+
+  const list = $("adminTaskList");
+  list.textContent = "Loading tasks...";
+
+  const { data, error } = await db
+    .from("tasks")
+    .select("id,title,description,reward_points,is_active")
+    .order("id", { ascending: true });
+
+  if (error) {
+    list.textContent = "Could not load tasks: " + error.message;
+    return;
+  }
+
+  if (!data?.length) {
+    list.textContent = "No tasks found.";
+    return;
+  }
+
+  list.innerHTML = data.map(task => `
+    <div class="item">
+      <h3>
+        ${escapeHTML(task.title)}
+        ${
+          task.is_active
+            ? '<span class="status">Active</span>'
+            : '<span class="status" style="background:#fee2e2;color:#991b1b">Inactive</span>'
+        }
+      </h3>
+
+      <p>${escapeHTML(task.description)}</p>
+
+      <p>
+        <strong>Reward:</strong>
+        ${Number(task.reward_points || 0)} points
+      </p>
+
+      <p class="muted">Task ID: ${escapeHTML(task.id)}</p>
+
+      <div class="item-actions">
+        <button type="button" onclick="editTask(${Number(task.id)})">
+          ✏️ Edit
+        </button>
+
+        <button class="danger" type="button"
+          onclick="deleteTask(${Number(task.id)})">
+          🗑️ Delete
+        </button>
+      </div>
+    </div>
+  `).join("");
+}
+
+/* ========================================
+   ADMIN: EDIT TASK
+======================================== */
+async function editTask(taskId) {
+  if (!isAdmin) {
+    alert("Admin access required.");
+    return;
+  }
+
+  const { data: task, error } = await db
+    .from("tasks")
+    .select("id,title,description,reward_points,is_active")
+    .eq("id", taskId)
+    .single();
+
+  if (error || !task) {
+    alert("Could not load task: " + (error?.message || "Task not found"));
+    return;
+  }
+
+  const title = prompt("Task title:", task.title);
+  if (title === null) return;
+
+  const description = prompt("Task description:", task.description);
+  if (description === null) return;
+
+  const rewardText = prompt("Reward points:", String(task.reward_points));
+  if (rewardText === null) return;
+
+  const reward = Number(rewardText);
+
+  if (
+    !title.trim() ||
+    !description.trim() ||
+    !Number.isInteger(reward) ||
+    reward < 1
+  ) {
+    alert("Please enter a title, description and a whole-number reward of at least 1.");
+    return;
+  }
+
+  const activeText = prompt(
+    "Task status লিখুন: active অথবা inactive",
+    task.is_active ? "active" : "inactive"
+  );
+
+  if (activeText === null) return;
+
+  const status = activeText.trim().toLowerCase();
+
+  if (!["active", "inactive"].includes(status)) {
+    alert("Status must be active or inactive.");
+    return;
+  }
+
+  if (!confirm("Save changes to this task?")) return;
+
+  const { error: updateError } = await db
+    .from("tasks")
+    .update({
+      title: title.trim(),
+      description: description.trim(),
+      reward_points: reward,
+      is_active: status === "active"
+    })
+    .eq("id", taskId);
+
+  if (updateError) {
+    alert("Task update failed: " + updateError.message);
+    return;
+  }
+
+  alert("Task updated successfully.");
+
+  await loadAdminTasks();
+  await loadTasks();
+}
+
+/* ========================================
+   ADMIN: DELETE TASK
+======================================== */
+async function deleteTask(taskId) {
+  if (!isAdmin) {
+    alert("Admin access required.");
+    return;
+  }
+
+  const confirmed = confirm(
+    "Are you sure you want to permanently delete task ID " +
+    taskId +
+    "? This may fail if submissions are linked to this task."
+  );
+
+  if (!confirmed) return;
+
+  const { error } = await db
+    .from("tasks")
+    .delete()
+    .eq("id", taskId);
+
+  if (error) {
+    alert(
+      "Task delete failed: " +
+      error.message +
+      "\n\nIf submissions are linked to this task, consider editing the task and setting it to inactive instead."
+    );
+    return;
+  }
+
+  alert("Task deleted successfully.");
+
+  await loadAdminTasks();
+  await loadTasks();
+}
+
+/* REFRESH ADMIN TASK LIST */
+$("refreshAdminTasks").addEventListener("click", loadAdminTasks);
+
+/* ADMIN: LOAD PENDING SUBMISSIONS */
 async function loadAdminSubmissions() {
   if (!isAdmin) return;
 
@@ -1097,20 +1268,29 @@ async function loadAdminSubmissions() {
       <p><strong>Submission:</strong> ${escapeHTML(row.id)}</p>
       <p><strong>User:</strong> ${escapeHTML(row.user_id)}</p>
       <p><strong>Task:</strong> ${escapeHTML(row.task_id)}</p>
+
       <div class="item-actions">
         <button class="success" type="button"
-          onclick="reviewSubmission('${escapeHTML(row.id)}','approved')">Approve</button>
+          onclick="reviewSubmission('${escapeHTML(row.id)}','approved')">
+          Approve
+        </button>
+
         <button class="danger" type="button"
-          onclick="reviewSubmission('${escapeHTML(row.id)}','rejected')">Reject</button>
+          onclick="reviewSubmission('${escapeHTML(row.id)}','rejected')">
+          Reject
+        </button>
       </div>
     </div>
   `).join("");
 }
 
+/* ADMIN: APPROVE OR REJECT TASK SUBMISSION */
 async function reviewSubmission(submissionId, decision) {
   if (!isAdmin) return;
 
-  if (!confirm("Are you sure you want to " + decision + " this submission?")) return;
+  if (!confirm("Are you sure you want to " + decision + " this submission?")) {
+    return;
+  }
 
   const { error } = await db.rpc("review_task_submission", {
     p_submission_id: submissionId,
@@ -1123,9 +1303,11 @@ async function reviewSubmission(submissionId, decision) {
   }
 
   alert("Submission " + decision + ".");
+
   await loadAdminSubmissions();
 }
 
+/* ADMIN: LOAD PENDING WITHDRAWALS */
 async function loadAdminWithdrawals() {
   if (!isAdmin) return;
 
@@ -1153,20 +1335,29 @@ async function loadAdminWithdrawals() {
       <p><strong>Points:</strong> ${escapeHTML(row.points ?? row.amount_points ?? "—")}</p>
       <p><strong>Method:</strong> ${escapeHTML(row.payment_method ?? "—")}</p>
       <p><strong>Account:</strong> ${escapeHTML(row.account_details ?? row.payment_account ?? "—")}</p>
+
       <div class="item-actions">
         <button class="success" type="button"
-          onclick="reviewWithdrawal('${escapeHTML(row.id)}','approved')">Approve</button>
+          onclick="reviewWithdrawal('${escapeHTML(row.id)}','approved')">
+          Approve
+        </button>
+
         <button class="danger" type="button"
-          onclick="reviewWithdrawal('${escapeHTML(row.id)}','rejected')">Reject</button>
+          onclick="reviewWithdrawal('${escapeHTML(row.id)}','rejected')">
+          Reject
+        </button>
       </div>
     </div>
   `).join("");
 }
 
+/* ADMIN: REVIEW WITHDRAWAL */
 async function reviewWithdrawal(requestId, decision) {
   if (!isAdmin) return;
 
-  if (!confirm("Are you sure you want to " + decision + " this withdrawal?")) return;
+  if (!confirm("Are you sure you want to " + decision + " this withdrawal?")) {
+    return;
+  }
 
   const { error } = await db.rpc("review_withdrawal", {
     p_request_id: requestId,
@@ -1179,11 +1370,13 @@ async function reviewWithdrawal(requestId, decision) {
   }
 
   alert("Withdrawal " + decision + ".");
+
   await loadAdminWithdrawals();
   await loadWithdrawals();
   await loadProfile();
 }
 
+/* ADMIN: CREATE TASK */
 $("createTaskForm").addEventListener("submit", async event => {
   event.preventDefault();
 
@@ -1214,10 +1407,14 @@ $("createTaskForm").addEventListener("submit", async event => {
   }
 
   showMessage("createTaskMessage", "Task created successfully.");
+
   $("createTaskForm").reset();
+
   await loadTasks();
+  await loadAdminTasks();
 });
 
+/* LOGOUT */
 $("logoutButton").addEventListener("click", async () => {
   const { error } = await db.auth.signOut();
 
@@ -1229,8 +1426,10 @@ $("logoutButton").addEventListener("click", async () => {
   window.location.href = "auth.html";
 });
 
+/* INITIALIZE DASHBOARD */
 async function initDashboard() {
   currentUser = await requireUser();
+
   if (!currentUser) return;
 
   $("profileEmail").textContent = currentUser.email || "Email unavailable";
