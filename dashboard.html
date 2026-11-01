@@ -8,7 +8,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-:root{
+:root {
   --primary:#2563eb;
   --dark:#14213d;
   --bg:#f1f5ff;
@@ -18,362 +18,128 @@
   --green:#16a34a;
   --red:#dc2626;
 }
-
 *{box-sizing:border-box}
-
 body{
-  margin:0;
-  font-family:Arial,sans-serif;
-  background:var(--bg);
-  color:var(--text);
-  padding-bottom:90px;
+  margin:0;font-family:Arial,sans-serif;background:var(--bg);
+  color:var(--text);padding-bottom:90px
 }
-
 header{
-  background:var(--dark);
-  color:#fff;
-  padding:15px;
-  position:sticky;
-  top:0;
-  z-index:100;
-  box-shadow:0 3px 12px #0002;
+  background:var(--dark);color:#fff;padding:15px;position:sticky;
+  top:0;z-index:100;box-shadow:0 3px 12px #0002
 }
-
 .header-row{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  max-width:1000px;
-  margin:auto;
+  display:flex;justify-content:space-between;align-items:center;
+  max-width:1000px;margin:auto
 }
-
 .brand{font-size:24px;font-weight:bold}
-
-.brand small{
-  display:block;
-  font-size:12px;
-  font-weight:normal;
-  margin-top:4px;
-  color:#cbd5e1;
-}
-
+.brand small{display:block;font-size:12px;font-weight:normal;margin-top:4px;color:#cbd5e1}
 button{
-  cursor:pointer;
-  border:none;
-  border-radius:9px;
-  padding:12px 14px;
-  background:var(--primary);
-  color:white;
-  font-weight:bold;
-  font-size:14px;
+  cursor:pointer;border:none;border-radius:9px;padding:12px 14px;
+  background:var(--primary);color:white;font-weight:bold;font-size:14px
 }
-
 button:disabled{opacity:.6;cursor:not-allowed}
 .menu-button{background:#334155}
-
 .top-menu{
-  display:none;
-  max-width:1000px;
-  margin:15px auto 0;
-  grid-template-columns:repeat(3,1fr);
-  gap:8px;
+  display:none;max-width:1000px;margin:15px auto 0;
+  grid-template-columns:repeat(3,1fr);gap:8px
 }
-
 .top-menu.open{display:grid}
-
-.top-menu button{
-  background:#243653;
-  border:1px solid #475569;
-}
-
+.top-menu button{background:#243653;border:1px solid #475569}
 .top-menu button.active{background:var(--primary)}
-
-.container{
-  max-width:1000px;
-  margin:20px auto;
-  padding:0 14px;
-}
-
+.container{max-width:1000px;margin:20px auto;padding:0 14px}
 .view-section{min-height:55vh}
 .hidden{display:none!important}
-
 .page-title{margin:0 0 6px;font-size:25px}
-
-.subtitle{
-  margin:0 0 20px;
-  color:var(--muted);
-  font-size:14px;
-  line-height:1.6;
-}
-
+.subtitle{margin:0 0 20px;color:var(--muted);font-size:14px;line-height:1.6}
 .card{
-  background:var(--card);
-  border-radius:16px;
-  padding:18px;
-  margin-bottom:16px;
-  box-shadow:0 4px 16px #1e293b0c;
-  border:1px solid #e2e8f0;
-  min-width:0;
+  background:var(--card);border-radius:16px;padding:18px;margin-bottom:16px;
+  box-shadow:0 4px 16px #1e293b0c;border:1px solid #e2e8f0;min-width:0
 }
-
 .card h2{font-size:19px;margin:0 0 15px}
 .card h3{font-size:16px;margin:0 0 8px}
-
 .balance-number{
-  font-size:32px;
-  color:var(--green);
-  font-weight:bold;
-  margin:10px 0;
-  overflow-wrap:anywhere;
+  font-size:32px;color:var(--green);font-weight:bold;margin:10px 0;
+  overflow-wrap:anywhere
 }
-
-.muted{
-  color:var(--muted);
-  font-size:13px;
-  line-height:1.6;
-}
-
+.muted{color:var(--muted);font-size:13px;line-height:1.6}
 .status{
-  display:inline-block;
-  background:#dcfce7;
-  color:#166534;
-  padding:6px 10px;
-  border-radius:20px;
-  font-size:12px;
-  font-weight:bold;
+  display:inline-block;background:#dcfce7;color:#166534;padding:6px 10px;
+  border-radius:20px;font-size:12px;font-weight:bold
 }
-
 input,select,textarea{
-  width:100%;
-  padding:12px;
-  border:1px solid #cbd5e1;
-  border-radius:9px;
-  margin:6px 0 12px;
-  font-size:14px;
-  background:#fff;
-  color:var(--text);
+  width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:9px;
+  margin:6px 0 12px;font-size:14px;background:#fff;color:var(--text)
 }
-
 textarea{min-height:80px;resize:vertical}
 label{font-size:13px;font-weight:bold}
-
 button.secondary{background:#475569}
 button.success{background:var(--green)}
 button.danger{background:var(--red)}
 button.full{width:100%}
-
-.item{
-  padding:13px 0;
-  border-bottom:1px solid #e2e8f0;
-  overflow-wrap:anywhere;
-}
-
+.item{padding:13px 0;border-bottom:1px solid #e2e8f0;overflow-wrap:anywhere}
 .item:last-child{border-bottom:none}
-
-.item p{
-  margin:7px 0;
-  line-height:1.5;
-  font-size:14px;
-}
-
-.item-actions{
-  display:flex;
-  gap:8px;
-  flex-wrap:wrap;
-  margin-top:10px;
-}
-
-.item-actions button{
-  flex:1;
-  min-width:90px;
-}
-
+.item p{margin:7px 0;line-height:1.5;font-size:14px}
+.item-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.item-actions button{flex:1;min-width:90px}
 .notice{
-  padding:12px;
-  border-radius:9px;
-  background:#eff6ff;
-  color:#1d4ed8;
-  font-size:13px;
-  line-height:1.6;
-  margin:12px 0;
-  overflow-wrap:anywhere;
+  padding:12px;border-radius:9px;background:#eff6ff;color:#1d4ed8;
+  font-size:13px;line-height:1.6;margin:12px 0;overflow-wrap:anywhere
 }
-
 .error{color:var(--red)}
-
 .hero{
-  position:relative;
-  overflow:hidden;
-  border-radius:24px;
-  padding:28px 22px;
-  margin-bottom:20px;
-  color:white;
-  background:
-    radial-gradient(circle at 90% 10%,#60a5fa88,transparent 35%),
-    linear-gradient(135deg,#14213d 0%,#1d4ed8 65%,#0f766e 120%);
-  box-shadow:0 12px 30px #14213d25;
+  position:relative;overflow:hidden;border-radius:24px;padding:28px 22px;
+  margin-bottom:20px;color:white;
+  background:radial-gradient(circle at 90% 10%,#60a5fa88,transparent 35%),
+  linear-gradient(135deg,#14213d 0%,#1d4ed8 65%,#0f766e 120%);
+  box-shadow:0 12px 30px #14213d25
 }
-
 .hero::after{
-  content:"✦";
-  position:absolute;
-  right:18px;
-  top:5px;
-  font-size:100px;
-  color:#ffffff12;
-  pointer-events:none;
+  content:"✦";position:absolute;right:18px;top:5px;font-size:100px;
+  color:#ffffff12;pointer-events:none
 }
-
 .hero-badge{
-  display:inline-block;
-  background:#ffffff20;
-  border:1px solid #ffffff40;
-  border-radius:30px;
-  padding:7px 12px;
-  font-size:12px;
-  margin-bottom:16px;
+  display:inline-block;background:#ffffff20;border:1px solid #ffffff40;
+  border-radius:30px;padding:7px 12px;font-size:12px;margin-bottom:16px
 }
-
-.hero h1{
-  font-size:30px;
-  line-height:1.2;
-  margin:0 0 12px;
-  max-width:420px;
-}
-
-.hero p{
-  font-size:14px;
-  line-height:1.8;
-  color:#e0eaff;
-  max-width:450px;
-  margin:0 0 20px;
-}
-
-.hero .hero-button{
-  background:#fff;
-  color:#1d4ed8;
-  padding:13px 18px;
-}
-
-.hero-stats{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:8px;
-  margin-top:22px;
-}
-
+.hero h1{font-size:30px;line-height:1.2;margin:0 0 12px;max-width:420px}
+.hero p{font-size:14px;line-height:1.8;color:#e0eaff;max-width:450px;margin:0 0 20px}
+.hero .hero-button{background:#fff;color:#1d4ed8;padding:13px 18px}
+.hero-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:22px}
 .hero-stat{
-  padding:12px 8px;
-  background:#ffffff13;
-  border:1px solid #ffffff25;
-  border-radius:12px;
-  text-align:center;
+  padding:12px 8px;background:#ffffff13;border:1px solid #ffffff25;
+  border-radius:12px;text-align:center
 }
-
-.hero-stat strong{
-  display:block;
-  font-size:16px;
-  margin-bottom:5px;
-}
-
-.hero-stat span{
-  font-size:11px;
-  color:#dbeafe;
-}
-
+.hero-stat strong{display:block;font-size:16px;margin-bottom:5px}
+.hero-stat span{font-size:11px;color:#dbeafe}
 .section-label{font-size:18px;margin:24px 0 12px}
-
-.feature-grid{
-  display:grid;
-  grid-template-columns:repeat(2,minmax(0,1fr));
-  gap:12px;
-}
-
+.feature-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
 .feature-button{
-  background:#fff;
-  color:var(--text);
-  border:1px solid #e2e8f0;
-  border-radius:16px;
-  padding:18px 14px;
-  min-height:125px;
-  text-align:left;
-  box-shadow:0 4px 14px #1e293b08;
-  transition:transform .15s;
+  background:#fff;color:var(--text);border:1px solid #e2e8f0;
+  border-radius:16px;padding:18px 14px;min-height:125px;text-align:left;
+  box-shadow:0 4px 14px #1e293b08
 }
-
-.feature-button:active{transform:scale(.98)}
-
-.feature-icon{
-  display:block;
-  font-size:28px;
-  margin-bottom:12px;
-}
-
-.feature-button strong{
-  display:block;
-  font-size:15px;
-  margin-bottom:6px;
-}
-
-.feature-button small{
-  color:var(--muted);
-  font-weight:normal;
-  font-size:12px;
-  line-height:1.5;
-}
-
-.feature-button.admin-feature{
-  grid-column:1/-1;
-  min-height:auto;
-}
-
+.feature-icon{display:block;font-size:28px;margin-bottom:12px}
+.feature-button strong{display:block;font-size:15px;margin-bottom:6px}
+.feature-button small{color:var(--muted);font-weight:normal;font-size:12px;line-height:1.5}
+.feature-button.admin-feature{grid-column:1/-1;min-height:auto}
 .bottom-nav{
-  position:fixed;
-  bottom:0;
-  left:0;
-  right:0;
-  z-index:200;
-  background:#fff;
-  display:grid;
-  grid-template-columns:repeat(6,1fr);
+  position:fixed;bottom:0;left:0;right:0;z-index:200;background:#fff;
+  display:grid;grid-template-columns:repeat(6,1fr);
   padding:8px 2px calc(8px + env(safe-area-inset-bottom));
-  box-shadow:0 -3px 15px #0001;
-  border-top:1px solid #e2e8f0;
+  box-shadow:0 -3px 15px #0001;border-top:1px solid #e2e8f0
 }
-
 .bottom-nav button{
-  background:transparent;
-  color:#64748b;
-  border-radius:8px;
-  padding:7px 1px;
-  font-size:10px;
-  line-height:1.4;
+  background:transparent;color:#64748b;border-radius:8px;padding:7px 1px;
+  font-size:10px;line-height:1.4
 }
-
-.bottom-nav button span{
-  display:block;
-  font-size:19px;
-  margin-bottom:2px;
-}
-
-.bottom-nav button.active{
-  color:var(--primary);
-  background:#eff6ff;
-}
-
-footer{
-  text-align:center;
-  color:var(--muted);
-  font-size:12px;
-  padding:18px 10px;
-}
-
+.bottom-nav button span{display:block;font-size:19px;margin-bottom:2px}
+.bottom-nav button.active{color:var(--primary);background:#eff6ff}
+footer{text-align:center;color:var(--muted);font-size:12px;padding:18px 10px}
 @media(min-width:700px){
   .feature-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
   .hero{padding:38px}
   .hero h1{font-size:38px}
 }
-
 @media(max-width:380px){
   .brand{font-size:21px}
   .hero{padding:23px 17px}
@@ -386,16 +152,11 @@ footer{
 </head>
 
 <body>
-
 <header>
   <div class="header-row">
-    <div class="brand">
-      EarnHub
-      <small>Your earning dashboard</small>
-    </div>
+    <div class="brand">EarnHub<small>Your earning dashboard</small></div>
     <button class="menu-button" id="menuToggle" type="button">☰ Menu</button>
   </div>
-
   <nav class="top-menu" id="topMenu">
     <button data-view="home">🏠 Home</button>
     <button data-view="tasks">📋 Tasks</button>
@@ -414,120 +175,48 @@ footer{
   <div class="hero">
     <span class="hero-badge">✦ WELCOME TO EARNHUB</span>
     <h1>Complete Tasks.<br>Earn Rewards.</h1>
-    <p>
-      Welcome to your earning dashboard. Explore available tasks,
-      track your points and manage your EarnHub account in one place.
-    </p>
-
-    <button class="hero-button" type="button" data-view="tasks">
-      Explore Tasks →
-    </button>
-
+    <p>Explore available tasks, track your points and manage your EarnHub account in one place.</p>
+    <button class="hero-button" type="button" data-view="tasks">Explore Tasks →</button>
     <div class="hero-stats">
-      <div class="hero-stat">
-        <strong>📋 Tasks</strong>
-        <span>Explore opportunities</span>
-      </div>
-      <div class="hero-stat">
-        <strong>🎁 Rewards</strong>
-        <span>Track your points</span>
-      </div>
-      <div class="hero-stat">
-        <strong>👥 Referral</strong>
-        <span>Invite your friends</span>
-      </div>
+      <div class="hero-stat"><strong>📋 Tasks</strong><span>Explore opportunities</span></div>
+      <div class="hero-stat"><strong>🎁 Rewards</strong><span>Track your points</span></div>
+      <div class="hero-stat"><strong>👥 Referral</strong><span>Invite your friends</span></div>
     </div>
   </div>
 
   <h2 class="section-label">Explore EarnHub</h2>
-
   <div class="feature-grid">
-    <button class="feature-button" type="button" data-view="tasks">
-      <span class="feature-icon">📋</span>
-      <strong>Available Tasks</strong>
-      <small>Find tasks and submit your work.</small>
-    </button>
-
-    <button class="feature-button" type="button" data-view="referral">
-      <span class="feature-icon">👥</span>
-      <strong>Referral Center</strong>
-      <small>Copy and share your referral link.</small>
-    </button>
-
-    <button class="feature-button" type="button" data-view="wallet">
-      <span class="feature-icon">💰</span>
-      <strong>My Wallet</strong>
-      <small>View your current points balance.</small>
-    </button>
-
-    <button class="feature-button" type="button" data-view="withdraw">
-      <span class="feature-icon">💸</span>
-      <strong>Withdraw</strong>
-      <small>Submit and check withdrawal requests.</small>
-    </button>
-
-    <button class="feature-button" type="button" data-view="profile">
-      <span class="feature-icon">👤</span>
-      <strong>My Profile</strong>
-      <small>View account details and sign out.</small>
-    </button>
-
-    <button class="feature-button" type="button" data-view="history">
-      <span class="feature-icon">📜</span>
-      <strong>Activity History</strong>
-      <small>Review tasks and withdrawal requests.</small>
-    </button>
-
-    <button class="feature-button admin-feature hidden"
-      id="homeAdminButton" type="button" data-view="admin">
-      <span class="feature-icon">🛡️</span>
-      <strong>Admin Panel</strong>
-      <small>Manage tasks, submissions and withdrawal requests.</small>
-    </button>
+    <button class="feature-button" data-view="tasks"><span class="feature-icon">📋</span><strong>Available Tasks</strong><small>Find tasks and earn points.</small></button>
+    <button class="feature-button" data-view="referral"><span class="feature-icon">👥</span><strong>Referral Center</strong><small>Copy and share your referral link.</small></button>
+    <button class="feature-button" data-view="wallet"><span class="feature-icon">💰</span><strong>My Wallet</strong><small>View your points balance.</small></button>
+    <button class="feature-button" data-view="withdraw"><span class="feature-icon">💸</span><strong>Withdraw</strong><small>Submit withdrawal requests.</small></button>
+    <button class="feature-button" data-view="profile"><span class="feature-icon">👤</span><strong>My Profile</strong><small>View account and sign out.</small></button>
+    <button class="feature-button" data-view="history"><span class="feature-icon">📜</span><strong>Activity History</strong><small>Review tasks and withdrawals.</small></button>
+    <button class="feature-button admin-feature hidden" id="homeAdminButton" data-view="admin"><span class="feature-icon">🛡️</span><strong>Admin Panel</strong><small>Manage tasks, submissions and withdrawals.</small></button>
   </div>
-
-  <div class="notice" style="margin-top:18px">
-    EarnHub demo: points and conversion values are illustrative.
-    Real cash payments are not guaranteed.
-  </div>
+  <div class="notice">EarnHub demo: points and conversion values are illustrative. Real cash payments are not guaranteed.</div>
 </section>
 
 <section class="view-section hidden" id="view-tasks">
   <h1 class="page-title">📋 Tasks</h1>
-  <p class="subtitle">Complete available tasks and submit them for review.</p>
-
-  <div class="card">
-    <h2>Available Tasks</h2>
-    <div id="taskList">Loading tasks...</div>
-  </div>
-
-  <div class="card">
-    <h2>My Submissions</h2>
-    <div id="mySubmissions">Loading submissions...</div>
-  </div>
+  <p class="subtitle">Start a task, visit its link, wait for the timer and claim the reward. Repeat tasks are allowed.</p>
+  <div class="card"><h2>Available Tasks</h2><div id="taskList">Loading tasks...</div></div>
+  <div class="card"><h2>My Task Reward History</h2><div id="myRewardHistory">Loading...</div></div>
+  <div class="card"><h2>Legacy Task Submissions</h2><div id="mySubmissions">Loading submissions...</div></div>
 </section>
 
 <section class="view-section hidden" id="view-referral">
   <h1 class="page-title">👥 Referral Center</h1>
   <p class="subtitle">Invite friends to EarnHub.</p>
-
   <div class="card">
     <h2>My Referral Code</h2>
-    <input id="referralCode" readonly placeholder="Loading referral code...">
-    <button class="full" id="copyReferralCode" type="button">Copy Referral Code</button>
-
+    <input id="referralCode" readonly>
+    <button class="full" id="copyReferralCode">Copy Referral Code</button>
     <h2 style="margin-top:20px">My Referral Link</h2>
-    <input id="referralLink" readonly placeholder="Loading referral link...">
-    <button class="full" id="copyReferralLink" type="button">Copy Referral Link</button>
-
-    <div class="notice">
-      Referral rewards depend on the configured referral rules.
-      A reward is not cash unless a real payment system is configured.
-    </div>
-
-    <button class="full success" id="claimReferral" type="button">
-      Claim Referral Bonus
-    </button>
+    <input id="referralLink" readonly>
+    <button class="full" id="copyReferralLink">Copy Referral Link</button>
+    <div class="notice">Referral rewards depend on configured rules and are not cash unless a real payment system is configured.</div>
+    <button class="full success" id="claimReferral">Claim Referral Bonus</button>
     <p id="referralMessage" class="muted"></p>
   </div>
 </section>
@@ -535,42 +224,26 @@ footer{
 <section class="view-section hidden" id="view-wallet">
   <h1 class="page-title">💰 My Wallet</h1>
   <p class="subtitle">View your current points balance.</p>
-
   <div class="card">
     <h2>Available Balance</h2>
     <div class="balance-number"><span id="walletPoints">0</span> points</div>
     <p id="walletValue" class="muted">Illustrative value: ৳0</p>
-
-    <div class="notice">
-      Points are not cash. The displayed conversion is illustrative
-      and does not guarantee payment.
-    </div>
-
-    <button class="full" type="button" data-view="withdraw">
-      Request Withdrawal
-    </button>
+    <div class="notice">Points are not cash. Displayed conversion is illustrative and does not guarantee payment.</div>
+    <button class="full" data-view="withdraw">Request Withdrawal</button>
   </div>
-
-  <div class="card">
-    <h2>Withdrawal History</h2>
-    <div id="withdrawHistory">Loading withdrawal history...</div>
-  </div>
+  <div class="card"><h2>Withdrawal History</h2><div id="withdrawHistory">Loading...</div></div>
 </section>
 
 <section class="view-section hidden" id="view-withdraw">
   <h1 class="page-title">💸 Withdraw Points</h1>
   <p class="subtitle">Submit a withdrawal request for admin review.</p>
-
   <div class="card">
     <h2>Withdrawal Request</h2>
     <p>Available balance: <strong id="withdrawAvailable">0 points</strong></p>
     <p class="muted">Minimum request: 2,000 points (illustrative ৳100)</p>
-
     <form id="withdrawForm">
       <label for="withdrawPoints">Points to withdraw</label>
-      <input id="withdrawPoints" type="number" min="2000" step="1"
-        placeholder="Enter points" required>
-
+      <input id="withdrawPoints" type="number" min="2000" step="1" required placeholder="Enter points">
       <label for="paymentMethod">Payment method</label>
       <select id="paymentMethod" required>
         <option value="">Choose method</option>
@@ -578,121 +251,92 @@ footer{
         <option value="Nagad">Nagad</option>
         <option value="Binance">Binance</option>
       </select>
-
       <label for="paymentAccount">Payment account details</label>
-      <input id="paymentAccount" type="text"
-        placeholder="Enter your payment number or account" required>
-
-      <button class="full" type="submit" id="withdrawSubmit">
-        Submit Withdrawal Request
-      </button>
+      <input id="paymentAccount" required placeholder="Enter your payment number or account">
+      <button class="full" id="withdrawSubmit">Submit Withdrawal Request</button>
     </form>
-
     <p id="withdrawMessage" class="muted"></p>
   </div>
-
-  <div class="card">
-    <h2>Recent Withdrawal Requests</h2>
-    <div id="withdrawHistory2">Loading withdrawal history...</div>
-  </div>
+  <div class="card"><h2>Recent Withdrawal Requests</h2><div id="withdrawHistory2">Loading...</div></div>
 </section>
 
 <section class="view-section hidden" id="view-profile">
   <h1 class="page-title">👤 My Profile</h1>
   <p class="subtitle">Your EarnHub account information.</p>
-
   <div class="card">
     <h2>Account Details</h2>
-    <p class="muted">Email address</p>
-    <p id="profileEmail" style="overflow-wrap:anywhere">Loading...</p>
-
-    <p class="muted">User ID</p>
-    <p id="profileId" style="font-size:12px;overflow-wrap:anywhere">Loading...</p>
-
-    <p class="muted">Account status</p>
-    <p><span class="status" id="profileStatus">Checking...</span></p>
-
-    <button class="full danger" id="logoutButton" type="button">Logout</button>
+    <p class="muted">Email address</p><p id="profileEmail"></p>
+    <p class="muted">User ID</p><p id="profileId" style="font-size:12px;overflow-wrap:anywhere"></p>
+    <p class="muted">Account status</p><p><span class="status" id="profileStatus">Checking...</span></p>
+    <button class="full danger" id="logoutButton">Logout</button>
   </div>
 </section>
 
 <section class="view-section hidden" id="view-history">
   <h1 class="page-title">📜 My History</h1>
-  <p class="subtitle">Your task submissions and withdrawal requests.</p>
-
-  <div class="card">
-    <h2>Task Submission History</h2>
-    <div id="historySubmissions">Loading...</div>
-  </div>
-
-  <div class="card">
-    <h2>Withdrawal History</h2>
-    <div id="historyWithdrawals">Loading...</div>
-  </div>
+  <p class="subtitle">Your task reward, submissions and withdrawal history.</p>
+  <div class="card"><h2>Repeat Task Rewards</h2><div id="historyRewards">Loading...</div></div>
+  <div class="card"><h2>Task Submission History</h2><div id="historySubmissions">Loading...</div></div>
+  <div class="card"><h2>Withdrawal History</h2><div id="historyWithdrawals">Loading...</div></div>
 </section>
 
 <section class="view-section hidden" id="view-admin">
   <h1 class="page-title">🛡️ Admin Panel</h1>
-  <p class="subtitle">Manage tasks, submissions and withdrawal requests.</p>
+  <p class="subtitle">Manage repeat tasks, submissions and withdrawal requests.</p>
 
   <div class="card">
-    <h2>Create Task</h2>
-
+    <h2 id="taskFormHeading">Create Repeat Task</h2>
     <form id="createTaskForm">
+      <input id="editTaskId" type="hidden">
+
       <label for="newTaskTitle">Task title</label>
       <input id="newTaskTitle" required placeholder="Enter task title">
 
       <label for="newTaskDescription">Task description</label>
-      <textarea id="newTaskDescription" required
-        placeholder="Describe the task"></textarea>
+      <textarea id="newTaskDescription" required placeholder="Describe the task"></textarea>
 
-      <label for="newTaskReward">Reward points</label>
-      <input id="newTaskReward" type="number" min="1" required
-        placeholder="Reward points">
+      <label for="newTaskUrl">Task URL (https://...)</label>
+      <input id="newTaskUrl" type="url" required placeholder="https://example.com">
 
-      <button class="full" type="submit">Create Task</button>
+      <label for="newTaskReward">Reward points per completion</label>
+      <input id="newTaskReward" type="number" min="1" step="1" required placeholder="Reward points">
+
+      <label for="newTaskWait">Wait time in seconds (minimum 10)</label>
+      <input id="newTaskWait" type="number" min="10" max="3600" step="1" value="10" required>
+
+      <label>
+        <input id="newTaskActive" type="checkbox" checked style="width:auto;margin:0 6px 0 0">
+        Task is active
+      </label>
+
+      <div style="height:12px"></div>
+      <button class="full" id="saveTaskButton">Create Task</button>
+      <button class="full secondary hidden" id="cancelEditTask" type="button" style="margin-top:8px">Cancel Edit</button>
     </form>
-
     <p id="createTaskMessage" class="muted"></p>
   </div>
 
-  <!-- TASK EDIT AND DELETE SECTION -->
   <div class="card">
-    <h2>Manage Tasks — Edit / Delete</h2>
-
-    <p class="muted">
-      এখান থেকে যেকোনো টাস্কের নাম, বিবরণ, পয়েন্ট ও Active status
-      পরিবর্তন অথবা টাস্ক ডিলিট করতে পারবে।
-    </p>
-
+    <h2>Manage Tasks — Edit / Deactivate</h2>
+    <p class="muted">পুরোনো reward history রক্ষা করতে টাস্ক ডিলিট না করে Inactive করা ভালো।</p>
     <div id="adminTaskList">Loading tasks...</div>
-
-    <button class="full secondary" id="refreshAdminTasks" type="button">
-      🔄 Refresh Task List
-    </button>
+    <button class="full secondary" id="refreshAdminTasks">🔄 Refresh Task List</button>
   </div>
 
-  <div class="card">
-    <h2>Pending Task Submissions</h2>
-    <div id="adminSubmissions">Loading...</div>
-  </div>
-
-  <div class="card">
-    <h2>Pending Withdrawals</h2>
-    <div id="adminWithdrawals">Loading...</div>
-  </div>
+  <div class="card"><h2>Pending Legacy Task Submissions</h2><div id="adminSubmissions">Loading...</div></div>
+  <div class="card"><h2>Pending Withdrawals</h2><div id="adminWithdrawals">Loading...</div></div>
 </section>
 
 <footer>EarnHub · Demo earning dashboard</footer>
 </main>
 
 <nav class="bottom-nav" aria-label="Main navigation">
-  <button class="active" type="button" data-view="home"><span>🏠</span>Home</button>
-  <button type="button" data-view="tasks"><span>📋</span>Tasks</button>
-  <button type="button" data-view="referral"><span>👥</span>Referral</button>
-  <button type="button" data-view="wallet"><span>💰</span>Wallet</button>
-  <button type="button" data-view="withdraw"><span>💸</span>Withdraw</button>
-  <button type="button" data-view="profile"><span>👤</span>Profile</button>
+  <button class="active" data-view="home"><span>🏠</span>Home</button>
+  <button data-view="tasks"><span>📋</span>Tasks</button>
+  <button data-view="referral"><span>👥</span>Referral</button>
+  <button data-view="wallet"><span>💰</span>Wallet</button>
+  <button data-view="withdraw"><span>💸</span>Withdraw</button>
+  <button data-view="profile"><span>👤</span>Profile</button>
 </nav>
 
 <script>
@@ -710,29 +354,27 @@ let isAdmin = false;
 const $ = id => document.getElementById(id);
 
 function escapeHTML(value) {
-  return String(value ?? "").replace(/[&<>"']/g, ch => ({
-    "&": "&amp;",
-    "<": "&lt;",
-    ">": "&gt;",
-    '"': "&quot;",
-    "'": "&#039;"
-  }[ch]));
+  return String(value ?? "").replace(/[&<>"']/g, c => ({
+    "&":"&amp;",
+    "<":"&lt;",
+    ">":"&gt;",
+    '"':"&quot;",
+    "'":"&#039;"
+  }[c]));
 }
 
 function showMessage(id, message, isError = false) {
-  const el = $(id);
-  if (!el) return;
-  el.textContent = message;
-  el.classList.toggle("error", isError);
+  const element = $(id);
+  if (element) {
+    element.textContent = message;
+    element.classList.toggle("error", isError);
+  }
 }
 
 function showView(view) {
-  const allowedViews = [
-    "home", "tasks", "referral", "wallet",
-    "withdraw", "profile", "history", "admin"
-  ];
+  const allowed = ["home","tasks","referral","wallet","withdraw","profile","history","admin"];
 
-  if (!allowedViews.includes(view)) view = "home";
+  if (!allowed.includes(view)) view = "home";
   if (view === "admin" && !isAdmin) view = "home";
 
   document.querySelectorAll(".view-section").forEach(section => {
@@ -744,7 +386,7 @@ function showView(view) {
   });
 
   $("topMenu").classList.remove("open");
-  window.scrollTo({ top: 0, behavior: "smooth" });
+  window.scrollTo({top:0, behavior:"smooth"});
 }
 
 document.querySelectorAll("[data-view]").forEach(button => {
@@ -756,10 +398,10 @@ $("menuToggle").addEventListener("click", () => {
 });
 
 async function requireUser() {
-  const { data, error } = await db.auth.getSession();
+  const {data, error} = await db.auth.getSession();
 
   if (error || !data.session) {
-    window.location.href = "auth.html";
+    location.href = "auth.html";
     return null;
   }
 
@@ -767,14 +409,14 @@ async function requireUser() {
 }
 
 async function loadProfile() {
-  const { data, error } = await db
+  const {data, error} = await db
     .from("profiles")
     .select("points")
     .eq("id", currentUser.id)
     .maybeSingle();
 
   if (error) {
-    console.error("Profile load error:", error);
+    console.error(error);
     return;
   }
 
@@ -782,102 +424,221 @@ async function loadProfile() {
 
   $("walletPoints").textContent = currentPoints;
   $("withdrawAvailable").textContent = currentPoints + " points";
-
   $("walletValue").textContent =
     "Illustrative value: ৳" + (currentPoints * 50 / 1000).toFixed(2);
 }
 
-/* LOAD ACTIVE TASKS FOR USERS */
+function validHttpUrl(url) {
+  try {
+    const parsed = new URL(url);
+    return parsed.protocol === "https:" || parsed.protocol === "http:";
+  } catch {
+    return false;
+  }
+}
+
+/* =========================
+   TASKS
+========================= */
+
 async function loadTasks() {
-  const { data, error } = await db
+  const {data, error} = await db
     .from("tasks")
-    .select("id,title,description,reward_points")
+    .select("id,title,description,reward_points,target_url,wait_seconds")
     .eq("is_active", true)
-    .order("id", { ascending: true });
+    .order("id");
 
   if (error) {
-    console.error("Tasks load error:", error);
-    $("taskList").textContent =
-      "Could not load tasks. Check your tasks table and permissions.";
+    $("taskList").textContent = "Could not load tasks: " + error.message;
     return;
   }
 
-  const tasks = data || [];
-
-  if (!tasks.length) {
+  if (!data?.length) {
     $("taskList").textContent = "No active tasks available right now.";
     return;
   }
 
-  $("taskList").innerHTML = tasks.map(task => `
+  $("taskList").innerHTML = data.map(task => `
     <div class="item">
       <h3>${escapeHTML(task.title)}</h3>
       <p>${escapeHTML(task.description)}</p>
-      <p><strong>Reward: ${Number(task.reward_points || 0)} points</strong></p>
-      <button type="button" onclick="submitTask(${Number(task.id)})">
-        Submit Task
-      </button>
+      <p>
+        <strong>Reward: ${Number(task.reward_points || 0)} points</strong>
+        · Wait: ${Math.max(10, Number(task.wait_seconds) || 10)} sec
+      </p>
+      ${
+        task.target_url
+        ? `<button type="button" onclick="startTask(${Number(task.id)})">▶ Start Task</button>`
+        : `<p class="muted">Task link is not configured yet.</p>`
+      }
     </div>
   `).join("");
 }
 
-/* SUBMIT TASK */
-async function submitTask(taskId) {
+async function startTask(taskId) {
   if (!currentUser) return;
 
-  const { data: existing, error: checkError } = await db
-    .from("task_submissions")
-    .select("id,status")
-    .eq("user_id", currentUser.id)
-    .eq("task_id", taskId)
-    .in("status", ["pending", "approved"])
-    .maybeSingle();
+  /*
+   * Open a tab immediately to reduce popup blocking.
+   * The database RPC must validate the task and wait time.
+   */
+  const tab = window.open("about:blank", "_blank");
 
-  if (checkError) {
-    alert("Could not check your previous submission: " + checkError.message);
-    return;
+  try {
+    const {data, error} = await db.rpc("start_repeat_task", {
+      p_task_id: taskId
+    });
+
+    if (error) throw error;
+
+    const claimId = Number(data?.claim_id);
+    const url = String(data?.target_url || "");
+    const wait = Math.max(10, Number(data?.wait_seconds) || 10);
+    const reward = Number(data?.reward_points) || 0;
+
+    if (!claimId || !validHttpUrl(url)) {
+      throw new Error("Task details returned by server are invalid.");
+    }
+
+    if (tab) {
+      tab.location.href = url;
+    } else {
+      alert("Popup blocked. Please allow popups or use the task link below.");
+    }
+
+    showTaskTimer(taskId, claimId, url, wait, reward);
+
+  } catch (error) {
+    if (tab) tab.close();
+    alert("Could not start task: " + (error.message || error));
   }
-
-  if (existing) {
-    alert("You already have a " + existing.status + " submission for this task.");
-    return;
-  }
-
-  const { error } = await db.from("task_submissions").insert({
-    user_id: currentUser.id,
-    task_id: taskId,
-    status: "pending"
-  });
-
-  if (error) {
-    alert("Submission failed: " + error.message);
-    return;
-  }
-
-  alert("Task submitted successfully! It is waiting for admin review.");
-
-  await loadSubmissions();
-
-  if (isAdmin) await loadAdminSubmissions();
 }
 
-/* LOAD USER SUBMISSIONS */
+function showTaskTimer(taskId, claimId, url, waitSeconds, reward) {
+  const box = document.createElement("div");
+  box.className = "notice";
+  box.id = "active-task-" + claimId;
+
+  box.innerHTML = `
+    <strong>Task started</strong>
+    <p>Reward: ${reward} points</p>
+    <p>Time remaining: <strong id="timer-${claimId}">${waitSeconds}</strong> seconds</p>
+    <p>
+      <a href="${escapeHTML(url)}" target="_blank" rel="noopener noreferrer">
+        Open task link again
+      </a>
+    </p>
+    <button id="claim-${claimId}" disabled>Claim Reward</button>
+    <p id="claim-msg-${claimId}"></p>
+  `;
+
+  $("taskList").prepend(box);
+
+  const button = $("claim-" + claimId);
+  let remaining = waitSeconds;
+
+  const timer = setInterval(() => {
+    remaining--;
+
+    const timerElement = $("timer-" + claimId);
+
+    if (timerElement) {
+      timerElement.textContent = Math.max(0, remaining);
+    }
+
+    if (remaining <= 0) {
+      clearInterval(timer);
+      button.disabled = false;
+      button.textContent = "🎁 Claim " + reward + " Points";
+    }
+  }, 1000);
+
+  button.addEventListener("click", async () => {
+    button.disabled = true;
+    showMessage("claim-msg-" + claimId, "Verifying reward...");
+
+    try {
+      const {data, error} = await db.rpc("claim_task_reward", {
+        p_claim_id: claimId
+      });
+
+      if (error) throw error;
+
+      const creditedReward = Number(data?.reward_points ?? reward);
+
+      showMessage(
+        "claim-msg-" + claimId,
+        "Success! " + creditedReward + " points added."
+      );
+
+      await loadProfile();
+      await loadRewardHistory();
+
+    } catch (error) {
+      showMessage(
+        "claim-msg-" + claimId,
+        error.message || "Claim failed.",
+        true
+      );
+
+      button.disabled = false;
+    }
+  });
+}
+
+async function loadRewardHistory() {
+  const {data, error} = await db
+    .from("task_reward_claims")
+    .select("id,task_id,reward_points,started_at,claimed_at,created_at")
+    .eq("user_id", currentUser.id)
+    .order("created_at", {ascending:false})
+    .limit(50);
+
+  if (error) {
+    $("myRewardHistory").textContent = "Could not load reward history: " + error.message;
+    $("historyRewards").textContent = "Could not load reward history.";
+    return;
+  }
+
+  if (!data?.length) {
+    $("myRewardHistory").textContent = "No repeat task attempts yet.";
+    $("historyRewards").textContent = "No repeat task attempts yet.";
+    return;
+  }
+
+  const html = data.map(row => `
+    <div class="item">
+      <p><strong>Task ID:</strong> ${escapeHTML(row.task_id)}</p>
+      <p><strong>Reward:</strong> ${Number(row.reward_points || 0)} points</p>
+      <p><strong>Status:</strong> ${row.claimed_at ? "Claimed" : "Started — not claimed"}</p>
+      <p class="muted">Started: ${escapeHTML(row.started_at || "")}</p>
+      ${row.claimed_at ? `<p class="muted">Claimed: ${escapeHTML(row.claimed_at)}</p>` : ""}
+    </div>
+  `).join("");
+
+  $("myRewardHistory").innerHTML = html;
+  $("historyRewards").innerHTML = html;
+}
+
+/* =========================
+   OLD TASK SUBMISSIONS
+========================= */
+
 async function loadSubmissions() {
-  const { data, error } = await db
+  const {data, error} = await db
     .from("task_submissions")
     .select("id,task_id,status,submitted_at")
     .eq("user_id", currentUser.id)
-    .order("submitted_at", { ascending: false });
+    .order("submitted_at", {ascending:false});
 
   if (error) {
-    console.error("Submissions load error:", error);
-    $("mySubmissions").textContent = "Could not load submissions.";
+    $("mySubmissions").textContent = "Could not load submissions: " + error.message;
     $("historySubmissions").textContent = "Could not load submissions.";
     return;
   }
 
   if (!data?.length) {
-    $("mySubmissions").textContent = "No submissions yet.";
+    $("mySubmissions").textContent = "No legacy submissions yet.";
     $("historySubmissions").textContent = "No submissions yet.";
     return;
   }
@@ -894,11 +655,14 @@ async function loadSubmissions() {
   $("historySubmissions").innerHTML = html;
 }
 
-/* REFERRAL */
+/* =========================
+   REFERRALS
+========================= */
+
 async function loadReferral() {
   const code = currentUser.id.replace(/-/g, "").slice(0, 8).toUpperCase();
+  const url = new URL("auth.html", location.href);
 
-  const url = new URL("auth.html", window.location.href);
   url.searchParams.set("ref", code);
 
   $("referralCode").value = code;
@@ -907,15 +671,17 @@ async function loadReferral() {
 
 async function copyText(id) {
   const input = $(id);
-  const value = input.value;
 
   try {
-    await navigator.clipboard.writeText(value);
+    await navigator.clipboard.writeText(input.value);
     alert("Copied successfully!");
   } catch {
     input.select();
-    const ok = document.execCommand("copy");
-    alert(ok ? "Copied successfully!" : "Please copy the text manually.");
+    alert(
+      document.execCommand("copy")
+      ? "Copied successfully!"
+      : "Please copy manually."
+    );
   }
 }
 
@@ -925,15 +691,13 @@ $("copyReferralLink").addEventListener("click", () => copyText("referralLink"));
 $("claimReferral").addEventListener("click", async () => {
   const button = $("claimReferral");
   button.disabled = true;
+
   showMessage("referralMessage", "Processing...");
 
   try {
-    const { error } = await db.rpc("claim_my_referral_reward");
+    const {error} = await db.rpc("claim_my_referral_reward");
 
-    if (error) {
-      showMessage("referralMessage", error.message, true);
-      return;
-    }
+    if (error) throw error;
 
     showMessage("referralMessage", "Referral reward request processed.");
     await loadProfile();
@@ -946,30 +710,30 @@ $("claimReferral").addEventListener("click", async () => {
   }
 });
 
-/* WITHDRAWAL HISTORY */
+/* =========================
+   WITHDRAWAL HISTORY
+========================= */
+
 async function loadWithdrawals() {
-  const { data, error } = await db
+  const {data, error} = await db
     .from("withdraw_requests")
     .select("*")
     .eq("user_id", currentUser.id)
-    .order("created_at", { ascending: false });
+    .order("created_at", {ascending:false});
+
+  const targets = ["withdrawHistory", "withdrawHistory2", "historyWithdrawals"];
 
   if (error) {
-    console.error("Withdrawal history error:", error);
-
-    ["withdrawHistory", "withdrawHistory2", "historyWithdrawals"].forEach(id => {
-      $(id).textContent =
-        "Could not load withdrawal history. Check table permissions.";
+    targets.forEach(id => {
+      $(id).textContent = "Could not load withdrawal history: " + error.message;
     });
-
     return;
   }
 
   if (!data?.length) {
-    ["withdrawHistory", "withdrawHistory2", "historyWithdrawals"].forEach(id => {
+    targets.forEach(id => {
       $(id).textContent = "No withdrawal requests yet.";
     });
-
     return;
   }
 
@@ -982,12 +746,11 @@ async function loadWithdrawals() {
     </div>
   `).join("");
 
-  ["withdrawHistory", "withdrawHistory2", "historyWithdrawals"].forEach(id => {
+  targets.forEach(id => {
     $(id).innerHTML = html;
   });
 }
 
-/* CREATE WITHDRAWAL REQUEST */
 $("withdrawForm").addEventListener("submit", async event => {
   event.preventDefault();
 
@@ -1015,19 +778,15 @@ $("withdrawForm").addEventListener("submit", async event => {
   showMessage("withdrawMessage", "Submitting request...");
 
   try {
-    const { error } = await db.rpc("request_withdrawal", {
+    const {error} = await db.rpc("request_withdrawal", {
       p_points: points,
       p_payment_method: method,
       p_account_details: account
     });
 
-    if (error) {
-      showMessage("withdrawMessage", error.message, true);
-      return;
-    }
+    if (error) throw error;
 
     showMessage("withdrawMessage", "Withdrawal request submitted for review.");
-
     $("withdrawForm").reset();
 
     await loadProfile();
@@ -1041,20 +800,18 @@ $("withdrawForm").addEventListener("submit", async event => {
   }
 });
 
-/* CHECK ADMIN PERMISSION */
+/* =========================
+   ADMIN ACCESS
+========================= */
+
 async function checkAdmin() {
-  const { data, error } = await db
+  const {data, error} = await db
     .from("admin_users")
     .select("user_id")
     .eq("user_id", currentUser.id)
     .maybeSingle();
 
-  if (error) {
-    console.error("Admin check error:", error);
-    isAdmin = false;
-  } else {
-    isAdmin = !!data;
-  }
+  isAdmin = !error && !!data;
 
   $("adminMenuButton").classList.toggle("hidden", !isAdmin);
   $("homeAdminButton").classList.toggle("hidden", !isAdmin);
@@ -1066,19 +823,30 @@ async function checkAdmin() {
   }
 }
 
-/* ========================================
-   ADMIN: LOAD ALL TASKS
-======================================== */
+function resetTaskForm() {
+  $("createTaskForm").reset();
+  $("editTaskId").value = "";
+  $("newTaskWait").value = "10";
+  $("newTaskActive").checked = true;
+  $("taskFormHeading").textContent = "Create Repeat Task";
+  $("saveTaskButton").textContent = "Create Task";
+  $("cancelEditTask").classList.add("hidden");
+}
+
+/* =========================
+   ADMIN TASK MANAGEMENT
+========================= */
+
 async function loadAdminTasks() {
   if (!isAdmin) return;
 
   const list = $("adminTaskList");
   list.textContent = "Loading tasks...";
 
-  const { data, error } = await db
+  const {data, error} = await db
     .from("tasks")
-    .select("id,title,description,reward_points,is_active")
-    .order("id", { ascending: true });
+    .select("id,title,description,reward_points,is_active,target_url,wait_seconds")
+    .order("id");
 
   if (error) {
     list.textContent = "Could not load tasks: " + error.message;
@@ -1096,170 +864,171 @@ async function loadAdminTasks() {
         ${escapeHTML(task.title)}
         ${
           task.is_active
-            ? '<span class="status">Active</span>'
-            : '<span class="status" style="background:#fee2e2;color:#991b1b">Inactive</span>'
+          ? '<span class="status">Active</span>'
+          : '<span class="status" style="background:#fee2e2;color:#991b1b">Inactive</span>'
         }
       </h3>
 
       <p>${escapeHTML(task.description)}</p>
 
       <p>
-        <strong>Reward:</strong>
-        ${Number(task.reward_points || 0)} points
+        <strong>Reward:</strong> ${Number(task.reward_points || 0)} points
+        · <strong>Wait:</strong> ${Math.max(10, Number(task.wait_seconds) || 10)} sec
+      </p>
+
+      <p>
+        <strong>URL:</strong>
+        ${
+          task.target_url
+          ? `<a href="${escapeHTML(task.target_url)}" target="_blank" rel="noopener noreferrer">Open link</a>`
+          : "Not set"
+        }
       </p>
 
       <p class="muted">Task ID: ${escapeHTML(task.id)}</p>
 
       <div class="item-actions">
-        <button type="button" onclick="editTask(${Number(task.id)})">
-          ✏️ Edit
-        </button>
-
-        <button class="danger" type="button"
-          onclick="deleteTask(${Number(task.id)})">
-          🗑️ Delete
+        <button onclick="editTask(${Number(task.id)})">✏️ Edit</button>
+        <button class="secondary" onclick="toggleTask(${Number(task.id)},${!task.is_active})">
+          ${task.is_active ? "Deactivate" : "Activate"}
         </button>
       </div>
     </div>
   `).join("");
 }
 
-/* ========================================
-   ADMIN: EDIT TASK
-======================================== */
-async function editTask(taskId) {
-  if (!isAdmin) {
-    alert("Admin access required.");
-    return;
-  }
+async function editTask(id) {
+  if (!isAdmin) return;
 
-  const { data: task, error } = await db
+  const {data:task, error} = await db
     .from("tasks")
-    .select("id,title,description,reward_points,is_active")
-    .eq("id", taskId)
+    .select("id,title,description,reward_points,is_active,target_url,wait_seconds")
+    .eq("id", id)
     .single();
 
   if (error || !task) {
-    alert("Could not load task: " + (error?.message || "Task not found"));
+    alert("Could not load task: " + (error?.message || "Not found"));
     return;
   }
 
-  const title = prompt("Task title:", task.title);
-  if (title === null) return;
+  $("editTaskId").value = task.id;
+  $("newTaskTitle").value = task.title || "";
+  $("newTaskDescription").value = task.description || "";
+  $("newTaskUrl").value = task.target_url || "";
+  $("newTaskReward").value = task.reward_points || 1;
+  $("newTaskWait").value = Math.max(10, Number(task.wait_seconds) || 10);
+  $("newTaskActive").checked = !!task.is_active;
 
-  const description = prompt("Task description:", task.description);
-  if (description === null) return;
+  $("taskFormHeading").textContent = "Edit Repeat Task #" + task.id;
+  $("saveTaskButton").textContent = "Save Task Changes";
+  $("cancelEditTask").classList.remove("hidden");
 
-  const rewardText = prompt("Reward points:", String(task.reward_points));
-  if (rewardText === null) return;
+  window.scrollTo({top:0, behavior:"smooth"});
+}
 
-  const reward = Number(rewardText);
+async function toggleTask(id, active) {
+  if (!isAdmin) return;
 
-  if (
-    !title.trim() ||
-    !description.trim() ||
-    !Number.isInteger(reward) ||
-    reward < 1
-  ) {
-    alert("Please enter a title, description and a whole-number reward of at least 1.");
-    return;
-  }
-
-  const activeText = prompt(
-    "Task status লিখুন: active অথবা inactive",
-    task.is_active ? "active" : "inactive"
-  );
-
-  if (activeText === null) return;
-
-  const status = activeText.trim().toLowerCase();
-
-  if (!["active", "inactive"].includes(status)) {
-    alert("Status must be active or inactive.");
-    return;
-  }
-
-  if (!confirm("Save changes to this task?")) return;
-
-  const { error: updateError } = await db
+  const {error} = await db
     .from("tasks")
-    .update({
-      title: title.trim(),
-      description: description.trim(),
-      reward_points: reward,
-      is_active: status === "active"
-    })
-    .eq("id", taskId);
+    .update({is_active:active})
+    .eq("id", id);
 
-  if (updateError) {
-    alert("Task update failed: " + updateError.message);
+  if (error) {
+    alert("Could not update task: " + error.message);
     return;
   }
-
-  alert("Task updated successfully.");
 
   await loadAdminTasks();
   await loadTasks();
 }
 
-/* ========================================
-   ADMIN: DELETE TASK
-======================================== */
-async function deleteTask(taskId) {
+$("cancelEditTask").addEventListener("click", resetTaskForm);
+$("refreshAdminTasks").addEventListener("click", loadAdminTasks);
+
+$("createTaskForm").addEventListener("submit", async event => {
+  event.preventDefault();
+
   if (!isAdmin) {
-    alert("Admin access required.");
+    showMessage("createTaskMessage", "Admin access required.", true);
     return;
   }
 
-  const confirmed = confirm(
-    "Are you sure you want to permanently delete task ID " +
-    taskId +
-    "? This may fail if submissions are linked to this task."
-  );
+  const id = $("editTaskId").value;
+  const title = $("newTaskTitle").value.trim();
+  const description = $("newTaskDescription").value.trim();
+  const url = $("newTaskUrl").value.trim();
+  const reward = Number($("newTaskReward").value);
+  const wait = Number($("newTaskWait").value);
+  const active = $("newTaskActive").checked;
 
-  if (!confirmed) return;
-
-  const { error } = await db
-    .from("tasks")
-    .delete()
-    .eq("id", taskId);
-
-  if (error) {
-    alert(
-      "Task delete failed: " +
-      error.message +
-      "\n\nIf submissions are linked to this task, consider editing the task and setting it to inactive instead."
+  if (
+    !title ||
+    !description ||
+    !validHttpUrl(url) ||
+    !Number.isInteger(reward) ||
+    reward < 1 ||
+    !Number.isInteger(wait) ||
+    wait < 10 ||
+    wait > 3600
+  ) {
+    showMessage(
+      "createTaskMessage",
+      "Enter title, description, a valid http/https URL, reward ≥1 and wait time 10–3600 seconds.",
+      true
     );
     return;
   }
 
-  alert("Task deleted successfully.");
+  const values = {
+    title,
+    description,
+    target_url:url,
+    reward_points:reward,
+    wait_seconds:wait,
+    is_active:active
+  };
 
-  await loadAdminTasks();
+  const result = id
+    ? await db.from("tasks").update(values).eq("id", Number(id))
+    : await db.from("tasks").insert(values);
+
+  if (result.error) {
+    showMessage("createTaskMessage", "Save failed: " + result.error.message, true);
+    return;
+  }
+
+  showMessage(
+    "createTaskMessage",
+    id ? "Task updated successfully." : "Repeat task created successfully."
+  );
+
+  resetTaskForm();
+
   await loadTasks();
-}
+  await loadAdminTasks();
+});
 
-/* REFRESH ADMIN TASK LIST */
-$("refreshAdminTasks").addEventListener("click", loadAdminTasks);
+/* =========================
+   ADMIN: LEGACY SUBMISSIONS
+========================= */
 
-/* ADMIN: LOAD PENDING SUBMISSIONS */
 async function loadAdminSubmissions() {
   if (!isAdmin) return;
 
-  const { data, error } = await db
+  const {data, error} = await db
     .from("task_submissions")
     .select("id,user_id,task_id,status,submitted_at")
     .eq("status", "pending")
-    .order("submitted_at", { ascending: true });
+    .order("submitted_at");
 
   if (error) {
-    $("adminSubmissions").textContent =
-      "Could not load pending submissions: " + error.message;
+    $("adminSubmissions").textContent = "Could not load submissions: " + error.message;
     return;
   }
 
   if (!data?.length) {
-    $("adminSubmissions").textContent = "No pending submissions.";
+    $("adminSubmissions").textContent = "No pending legacy submissions.";
     return;
   }
 
@@ -1268,33 +1037,20 @@ async function loadAdminSubmissions() {
       <p><strong>Submission:</strong> ${escapeHTML(row.id)}</p>
       <p><strong>User:</strong> ${escapeHTML(row.user_id)}</p>
       <p><strong>Task:</strong> ${escapeHTML(row.task_id)}</p>
-
       <div class="item-actions">
-        <button class="success" type="button"
-          onclick="reviewSubmission('${escapeHTML(row.id)}','approved')">
-          Approve
-        </button>
-
-        <button class="danger" type="button"
-          onclick="reviewSubmission('${escapeHTML(row.id)}','rejected')">
-          Reject
-        </button>
+        <button class="success" onclick="reviewSubmission('${escapeHTML(row.id)}','approved')">Approve</button>
+        <button class="danger" onclick="reviewSubmission('${escapeHTML(row.id)}','rejected')">Reject</button>
       </div>
     </div>
   `).join("");
 }
 
-/* ADMIN: APPROVE OR REJECT TASK SUBMISSION */
-async function reviewSubmission(submissionId, decision) {
-  if (!isAdmin) return;
+async function reviewSubmission(id, decision) {
+  if (!isAdmin || !confirm("Are you sure you want to " + decision + " this submission?")) return;
 
-  if (!confirm("Are you sure you want to " + decision + " this submission?")) {
-    return;
-  }
-
-  const { error } = await db.rpc("review_task_submission", {
-    p_submission_id: submissionId,
-    p_decision: decision
+  const {error} = await db.rpc("review_task_submission", {
+    p_submission_id:id,
+    p_decision:decision
   });
 
   if (error) {
@@ -1303,23 +1059,24 @@ async function reviewSubmission(submissionId, decision) {
   }
 
   alert("Submission " + decision + ".");
-
   await loadAdminSubmissions();
 }
 
-/* ADMIN: LOAD PENDING WITHDRAWALS */
+/* =========================
+   ADMIN: WITHDRAWALS
+========================= */
+
 async function loadAdminWithdrawals() {
   if (!isAdmin) return;
 
-  const { data, error } = await db
+  const {data, error} = await db
     .from("withdraw_requests")
     .select("*")
     .eq("status", "pending")
-    .order("created_at", { ascending: true });
+    .order("created_at");
 
   if (error) {
-    $("adminWithdrawals").textContent =
-      "Could not load pending withdrawals: " + error.message;
+    $("adminWithdrawals").textContent = "Could not load withdrawals: " + error.message;
     return;
   }
 
@@ -1337,31 +1094,19 @@ async function loadAdminWithdrawals() {
       <p><strong>Account:</strong> ${escapeHTML(row.account_details ?? row.payment_account ?? "—")}</p>
 
       <div class="item-actions">
-        <button class="success" type="button"
-          onclick="reviewWithdrawal('${escapeHTML(row.id)}','approved')">
-          Approve
-        </button>
-
-        <button class="danger" type="button"
-          onclick="reviewWithdrawal('${escapeHTML(row.id)}','rejected')">
-          Reject
-        </button>
+        <button class="success" onclick="reviewWithdrawal('${escapeHTML(row.id)}','approved')">Approve</button>
+        <button class="danger" onclick="reviewWithdrawal('${escapeHTML(row.id)}','rejected')">Reject</button>
       </div>
     </div>
   `).join("");
 }
 
-/* ADMIN: REVIEW WITHDRAWAL */
-async function reviewWithdrawal(requestId, decision) {
-  if (!isAdmin) return;
+async function reviewWithdrawal(id, decision) {
+  if (!isAdmin || !confirm("Are you sure you want to " + decision + " this withdrawal?")) return;
 
-  if (!confirm("Are you sure you want to " + decision + " this withdrawal?")) {
-    return;
-  }
-
-  const { error } = await db.rpc("review_withdrawal", {
-    p_request_id: requestId,
-    p_decision: decision
+  const {error} = await db.rpc("review_withdrawal", {
+    p_request_id:id,
+    p_decision:decision
   });
 
   if (error) {
@@ -1376,60 +1121,23 @@ async function reviewWithdrawal(requestId, decision) {
   await loadProfile();
 }
 
-/* ADMIN: CREATE TASK */
-$("createTaskForm").addEventListener("submit", async event => {
-  event.preventDefault();
+/* =========================
+   LOGOUT AND INITIALIZATION
+========================= */
 
-  if (!isAdmin) {
-    showMessage("createTaskMessage", "Admin access required.", true);
-    return;
-  }
-
-  const title = $("newTaskTitle").value.trim();
-  const description = $("newTaskDescription").value.trim();
-  const reward = Number($("newTaskReward").value);
-
-  if (!title || !description || !Number.isInteger(reward) || reward < 1) {
-    showMessage("createTaskMessage", "Please enter valid task details.", true);
-    return;
-  }
-
-  const { error } = await db.from("tasks").insert({
-    title,
-    description,
-    reward_points: reward,
-    is_active: true
-  });
-
-  if (error) {
-    showMessage("createTaskMessage", error.message, true);
-    return;
-  }
-
-  showMessage("createTaskMessage", "Task created successfully.");
-
-  $("createTaskForm").reset();
-
-  await loadTasks();
-  await loadAdminTasks();
-});
-
-/* LOGOUT */
 $("logoutButton").addEventListener("click", async () => {
-  const { error } = await db.auth.signOut();
+  const {error} = await db.auth.signOut();
 
   if (error) {
     alert("Logout failed: " + error.message);
     return;
   }
 
-  window.location.href = "auth.html";
+  location.href = "auth.html";
 });
 
-/* INITIALIZE DASHBOARD */
 async function initDashboard() {
   currentUser = await requireUser();
-
   if (!currentUser) return;
 
   $("profileEmail").textContent = currentUser.email || "Email unavailable";
@@ -1438,6 +1146,7 @@ async function initDashboard() {
 
   await loadProfile();
   await loadTasks();
+  await loadRewardHistory();
   await loadSubmissions();
   await loadReferral();
   await loadWithdrawals();
@@ -1447,10 +1156,9 @@ async function initDashboard() {
 }
 
 initDashboard().catch(error => {
-  console.error("Dashboard initialization error:", error);
+  console.error(error);
   alert("Dashboard error: " + (error.message || "Unknown error"));
 });
 </script>
-
 </body>
 </html>
